@@ -9,6 +9,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
     th { background-color: #f4f4f4; }
+    select, button { margin: 10px 0; padding: 8px; }
   </style>
   <script>
     async function fetchData() {
@@ -18,7 +19,7 @@
     }
 
     function populateTable(data) {
-      const table = document.getElementById("availabilityTable");
+      const table = document.getElementById("availabilityTable").getElementsByTagName("tbody")[0];
       const rooms = [...new Set(data.map(item => item.room))];
 
       rooms.forEach(room => {
@@ -32,9 +33,16 @@
         // Filtrar datas para o quarto selecionado
         const filteredDates = data.filter(item => item.room === room).map(item => new Date(item.date).toLocaleDateString());
         
-        // Adicionar coluna com as datas disponíveis
+        // Adicionar coluna com as datas disponíveis e a capacidade de selecioná-las
         const datesCell = document.createElement("td");
-        datesCell.textContent = filteredDates.join(", ");
+        const select = document.createElement("select");
+        filteredDates.forEach(date => {
+          const option = document.createElement("option");
+          option.value = date;
+          option.textContent = date;
+          select.appendChild(option);
+        });
+        datesCell.appendChild(select);
         row.appendChild(datesCell);
         
         table.appendChild(row);
@@ -59,4 +67,5 @@
   </table>
 </body>
 </html>
+
 
