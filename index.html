@@ -17,45 +17,48 @@
   <table id="availabilityTable">
     <thead>
       <tr>
-        <th>Quartos</th>
-        <th>14/03/2025</th>
-        <th>15/03/2025</th>
-        <th>16/03/2025</th>
-        <th>17/03/2025</th>
-        <th>18/03/2025</th>
-        <th>19/03/2025</th>
-        <th>20/03/2025</th>
+        <!-- Cabeçalhos serão preenchidos dinamicamente -->
       </tr>
     </thead>
     <tbody>
-      <!-- Linhas geradas dinamicamente -->
+      <!-- Linhas serão preenchidas dinamicamente -->
     </tbody>
   </table>
 
   <script>
-    // Dados simulados
-    const data = [
-      { room: "Quarto 1", dates: [0, 1, 0, 0, 1, 1, 0] },
-      { room: "Quarto 2", dates: [1, 0, 1, 0, 0, 0, 1] },
-      { room: "Quarto 3", dates: [0, 0, 0, 1, 1, 0, 0] },
-      // Adicione mais quartos conforme necessário
-    ];
+    // Função para buscar os dados da API do Google Apps Script
+    async function fetchRealData() {
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxeSX_M_cQ4zfAzPpZ7nc1oku76ZxO4E5uEo0LueLLjsDUB2SUOylNi8Poj1gjcV4jWoA/exec");
+        const data = await response.json();
+        populateTable(data); // Chama a função para preencher a tabela
+      } catch (error) {
+        console.error("Erro ao buscar os dados:", error);
+      }
+    }
 
+    // Função para preencher a tabela com os dados obtidos
     function populateTable(data) {
+      const tableHeader = document.querySelector("#availabilityTable thead tr");
       const tableBody = document.querySelector("#availabilityTable tbody");
 
-      data.forEach(item => {
+      // Adicionar cabeçalhos com as datas
+      const dates = data.dates;
+      tableHeader.innerHTML = "<th>Quartos</th>" + dates.map(date => `<th>${date}</th>`).join("");
+
+      // Adicionar linhas com os quartos e suas disponibilidades
+      data.rooms.forEach(room => {
         const row = document.createElement("tr");
         const roomCell = document.createElement("td");
-        roomCell.textContent = item.room;
+        roomCell.textContent = room.name;
         row.appendChild(roomCell);
 
-        item.dates.forEach((availability) => {
+        room.availability.forEach(availability => {
           const dateCell = document.createElement("td");
-          if (availability === 1) { // 1 representa ocupado
+          if (availability === 1) {
             dateCell.className = "occupied";
             dateCell.textContent = "Ocupado";
-          } else { // 0 representa disponível
+          } else {
             dateCell.className = "available";
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -68,8 +71,9 @@
       });
     }
 
-    // Preenche a tabela ao carregar a página
-    populateTable(data);
+    // Chama a função para buscar os dados ao carregar a página
+    window.onload = fetchRealData;
   </script>
 </body>
 </html>
+
