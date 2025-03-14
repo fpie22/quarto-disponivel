@@ -30,9 +30,9 @@
       });
 
       roomDropdown.addEventListener("change", () => {
-        dateDropdown.innerHTML = "";
+        dateDropdown.innerHTML = "<option value=''>Selecione uma data</option>";
         const selectedRoom = roomDropdown.value;
-        const filteredDates = data.filter(item => item.room === selectedRoom).map(item => item.date);
+        const filteredDates = data.filter(item => item.room === selectedRoom).map(item => new Date(item.date).toLocaleDateString());
         filteredDates.forEach(date => {
           const option = document.createElement("option");
           option.value = date;
@@ -57,6 +57,5 @@
   </select>
 </body>
 </html>
-
 
 
