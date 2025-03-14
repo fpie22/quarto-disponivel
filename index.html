@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,6 +49,7 @@
             dateCell.className = "available";
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
+            checkbox.disabled = false; // Habilitar seleção para datas disponíveis
             dateCell.appendChild(checkbox); // Adicionar um checkbox para datas disponíveis
           }
 
