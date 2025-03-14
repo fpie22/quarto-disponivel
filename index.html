@@ -26,6 +26,7 @@
     }
 
     function populateTable(data) {
+      console.log("Populating table with data:", data);
       const table = document.getElementById("availabilityTable").getElementsByTagName("tbody")[0];
       table.innerHTML = ''; // Limpar a tabela antes de preencher novamente
       const rooms = [...new Set(data.map(item => item.room))];
@@ -83,4 +84,5 @@
   </table>
 </body>
 </html>
+
 
