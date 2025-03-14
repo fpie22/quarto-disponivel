@@ -24,60 +24,43 @@
     }
 
     function populateTable(data) {
-      const table = document.getElementById("availabilityTable").getElementsByTagName("tbody")[0];
-      table.innerHTML = ''; // Limpar a tabela antes de preencher novamente
-      const rooms = [...new Set(data.map(item => item.room))];
-      const dates = [...new Set(data.map(item => item.date))].sort((a, b) => new Date(a) - new Date(b));
+function populateTable(data) {
+  const table = document.getElementById("availabilityTable").getElementsByTagName("tbody")[0];
+  table.innerHTML = ''; // Limpar a tabela antes de preencher novamente
+  const rooms = [...new Set(data.map(item => item.room))];
+  const dates = [...new Set(data.map(item => item.date))].sort((a, b) => new Date(a) - new Date(b));
 
-      // Adicionar cabeçalho da tabela com as datas
-      const headerRow = document.createElement("tr");
-      headerRow.innerHTML = "<th>Quartos</th>" + dates.map(date => `<th>${new Date(date).toLocaleDateString()}</th>`).join("");
-      table.appendChild(headerRow);
+  // Adicionar cabeçalho da tabela com as datas
+  const headerRow = document.createElement("tr");
+  headerRow.innerHTML = "<th>Quartos</th>" + dates.map(date => `<th>${new Date(date).toLocaleDateString()}</th>`).join("");
+  table.appendChild(headerRow);
 
-      rooms.forEach(room => {
-        const row = document.createElement("tr");
-        const roomCell = document.createElement("td");
-        roomCell.textContent = room;
-        row.appendChild(roomCell);
+  rooms.forEach(room => {
+    const row = document.createElement("tr");
+    const roomCell = document.createElement("td");
+    roomCell.textContent = room;
+    row.appendChild(roomCell);
 
-        dates.forEach(date => {
-          const dateCell = document.createElement("td");
-          const roomData = data.find(item => item.room === room && item.date === date);
-          console.log(`Room: ${room}, Date: ${date}, Data:`, roomData);
+    dates.forEach(date => {
+      const dateCell = document.createElement("td");
+      const roomData = data.find(item => item.room === room && item.date === date);
 
-          if (roomData && roomData.occupied) {
-            dateCell.className = "occupied";
-            dateCell.textContent = "Ocupado";
-          } else {
-            dateCell.className = "available";
-            dateCell.textContent = "Disponível";
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            dateCell.appendChild(checkbox);
-          }
+      if (roomData && roomData.occupied === true) { // Certifique-se de que o campo 'occupied' seja verificado corretamente
+        dateCell.className = "occupied";
+        dateCell.textContent = "Ocupado";
+      } else if (roomData) {
+        dateCell.className = "available";
+        dateCell.textContent = "Disponível";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        dateCell.appendChild(checkbox);
+      } else {
+        dateCell.textContent = "N/A"; // Caso não haja dados para essa combinação de quarto e data
+      }
 
-          row.appendChild(dateCell);
-        });
+      row.appendChild(dateCell);
+    });
 
-        table.appendChild(row);
-      });
-    }
-
-    window.onload = fetchData;
-  </script>
-</head>
-<body>
-  <h1>Datas Disponíveis</h1>
-  <table id="availabilityTable">
-    <thead>
-      <tr>
-        <!-- Cabeçalhos das colunas serão adicionados dinamicamente -->
-      </tr>
-    </thead>
-    <tbody>
-      <!-- As linhas serão adicionadas dinamicamente aqui -->
-    </tbody>
-  </table>
-</body>
-</html>
-
+    table.appendChild(row);
+  });
+}
