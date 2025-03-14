@@ -14,19 +14,12 @@
   </style>
   <script>
     async function fetchData() {
-      try {
-        console.log("Fetching data...");
-        const response = await fetch("https://script.google.com/macros/s/AKfycbznFsUCizJKGMvVXUc9AO5hkIhPz33jcSfybrLOZ2B9cm-04YS1QJEjC6E79FKBQ3Kf8A/exec");
-        const data = await response.json();
-        console.log("Data fetched:", data);
-        populateTable(data);
-      } catch (error) {
-        console.error("Erro ao buscar os dados:", error);
-      }
+      const response = await fetch("https://script.google.com/macros/s/AKfycbznFsUCizJKGMvVXUc9AO5hkIhPz33jcSfybrLOZ2B9cm-04YS1QJEjC6E79FKBQ3Kf8A/exec");
+      const data = await response.json();
+      populateTable(data);
     }
 
     function populateTable(data) {
-      console.log("Populating table with data:", data);
       const table = document.getElementById("availabilityTable").getElementsByTagName("tbody")[0];
       table.innerHTML = ''; // Limpar a tabela antes de preencher novamente
       const rooms = [...new Set(data.map(item => item.room))];
@@ -50,7 +43,7 @@
           const dateCell = document.createElement("td");
           const roomData = data.find(item => item.room === room && item.date === date);
 
-          if (roomData && roomData.occupied === 1) {
+          if (roomData && roomData.occupied) {
             dateCell.className = "occupied";
             dateCell.textContent = "Ocupado"; // Indicar que a data está ocupada
           } else {
@@ -84,5 +77,6 @@
   </table>
 </body>
 </html>
+
 
 
