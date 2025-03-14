@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +10,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
     th { background-color: #f4f4f4; }
-    .occupied { background-color: #f4f4f4; }
+    .occupied { background-color: #f4f4f4; color: #a0a0a0; }
     .available { background-color: #dff0d8; }
   </style>
   <script>
@@ -43,11 +45,11 @@
 
           if (roomData && roomData.occupied) {
             dateCell.className = "occupied";
-            dateCell.textContent = "ocupado";
+            dateCell.textContent = "Ocupado";
           } else {
+            dateCell.className = "available";
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            dateCell.className = "available";
             dateCell.appendChild(checkbox);
           }
 
@@ -75,6 +77,5 @@
   </table>
 </body>
 </html>
-
 
 
