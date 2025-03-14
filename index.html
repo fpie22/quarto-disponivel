@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +8,8 @@
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
     th { background-color: #f4f4f4; }
-    .occupied { background-color: #f4f4f4; }
-    .available { background-color: #dff0d8; }
+    .occupied { background-color: #ffcccc; color: #a0a0a0; } /* Cor de fundo para datas ocupadas */
+    .available { background-color: #dff0d8; } /* Cor de fundo para datas disponíveis */
   </style>
   <script>
     async function fetchData() {
@@ -22,6 +20,7 @@
 
     function populateTable(data) {
       const table = document.getElementById("availabilityTable").getElementsByTagName("tbody")[0];
+      table.innerHTML = ''; // Limpar a tabela antes de preencher novamente
       const rooms = [...new Set(data.map(item => item.room))];
       const dates = [...new Set(data.map(item => item.date))].sort((a, b) => new Date(a) - new Date(b));
 
@@ -45,12 +44,12 @@
 
           if (roomData && roomData.occupied) {
             dateCell.className = "occupied";
-            dateCell.textContent = "ocupado";
+            dateCell.textContent = "Ocupado"; // Indicar que a data está ocupada
           } else {
+            dateCell.className = "available";
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            dateCell.className = "available";
-            dateCell.appendChild(checkbox);
+            dateCell.appendChild(checkbox); // Adicionar um checkbox para datas disponíveis
           }
 
           row.appendChild(dateCell);
@@ -77,4 +76,3 @@
   </table>
 </body>
 </html>
-
