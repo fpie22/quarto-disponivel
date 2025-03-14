@@ -29,7 +29,7 @@
     // Função para buscar os dados da API do Google Apps Script
     async function fetchRealData() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxbWIb3uWDZY55R0GWR2ahOfCu1UiWwHdD3BDhZdZq_r6xXUoctDYGsJ9wOOa5bnGMNOw/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzpPamnoV5brJPsLsJgxqmNglv1vKFR3sYRHDIi7jHpbaL4KOp0k0hRneh-FX3bJef-jg/exec");
         const data = await response.json();
         populateTable(data); // Chama a função para preencher a tabela
       } catch (error) {
