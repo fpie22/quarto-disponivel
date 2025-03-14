@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,14 +43,13 @@
           const dateCell = document.createElement("td");
           const roomData = data.find(item => item.room === room && item.date === date);
 
-          if (roomData && roomData.occupied) {
+          if (roomData && roomData.occupied === 1) {
             dateCell.className = "occupied";
             dateCell.textContent = "Ocupado"; // Indicar que a data está ocupada
           } else {
             dateCell.className = "available";
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.disabled = false; // Habilitar seleção para datas disponíveis
             dateCell.appendChild(checkbox); // Adicionar um checkbox para datas disponíveis
           }
 
