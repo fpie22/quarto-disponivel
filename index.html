@@ -14,9 +14,13 @@
   </style>
   <script>
     async function fetchData() {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbznFsUCizJKGMvVXUc9AO5hkIhPz33jcSfybrLOZ2B9cm-04YS1QJEjC6E79FKBQ3Kf8A/exec");
-      const data = await response.json();
-      populateTable(data);
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbznFsUCizJKGMvVXUc9AO5hkIhPz33jcSfybrLOZ2B9cm-04YS1QJEjC6E79FKBQ3Kf8A/exec");
+        const data = await response.json();
+        populateTable(data);
+      } catch (error) {
+        console.error("Erro ao buscar os dados:", error);
+      }
     }
 
     function populateTable(data) {
@@ -77,4 +81,5 @@
   </table>
 </body>
 </html>
+
 
