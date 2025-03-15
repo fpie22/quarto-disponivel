@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -68,6 +67,8 @@
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
+
+  <!-- Formulário de Reservas -->
   <div class="form-container">
     <h3>Informações do Cliente</h3>
     <form id="reservationForm">
@@ -87,63 +88,58 @@
     </form>
   </div>
 
+  <!-- Tabela de Disponibilidade -->
   <h3>Disponibilidade de Quartos</h3>
   <div id="availability">
-    <!-- A tabela de disponibilidade será preenchida dinamicamente -->
+    <!-- A tabela será gerada dinamicamente aqui -->
   </div>
 
   <script>
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyKLGiiVcfpWN5IdnR03tQ7srReEysc7H8wR1VeWZUUbQ5RbXtjGJwTENdZgQ5V-8rhZA/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycby-fv-hhU4Mk2zGtNcYjVTEJ_Q0-hTK0aDVrzVbmhGRqhetp403KPMy-bg8PMUXgZVtuA/exec"); // Substitua pelo seu Script ID
+        if (!response.ok) {
+          throw new Error("Erro ao buscar os dados: " + response.status);
+        }
         const data = await response.json();
+
+        console.log("Dados recebidos do servidor:", data);
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
 
-        // Cria o cabeçalho da tabela
+        // Cabeçalhos da tabela
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
-        headerRow.innerHTML = `
-          <th>Quarto</th>
-          ${data.dates.map(date => `<th>${date}</th>`).join("")}
-        `;
+        headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${date}</th>`).join("")}`;
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Cria as linhas da tabela com disponibilidade e caixas de seleção
+        // Linhas da tabela
         const tbody = document.createElement("tbody");
-data.rooms.forEach((room, roomIndex) => {
-  const row = document.createElement("tr");
-
-  row.innerHTML = `
-    <td>${room.name}</td>
-    ${room.availability.map((status, dateIndex) => `
-      <td class="${status === "Disponível" ? "available" : "occupied"}">
-        ${status === "Disponível"
-          ? `<input type="checkbox" name="room-${roomIndex}-date-${dateIndex}" value="${room.name} - ${data.dates[dateIndex]}" />`
-          : "Ocupado"}
-      </td>
-    `).join("")}
-  `;
-  tbody.appendChild(row);
-});
-
-  tbody.appendChild(row);
-});
-
+        data.rooms.forEach(room => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${room.name}</td>
+            ${room.availability.map(status => `
+              <td class="${status === "Disponível" ? "available" : "occupied"}">
+                ${status === "Disponível" ? `<input type="checkbox" />` : "Ocupado"}
+              </td>
+            `).join("")}
+          `;
+          tbody.appendChild(row);
+        });
         table.appendChild(tbody);
 
         availabilityDiv.appendChild(table);
       } catch (error) {
-        console.error("Erro ao carregar datas disponíveis:", error);
+        console.error("Erro ao carregar as datas disponíveis:", error);
         document.getElementById("availability").innerText = "Erro ao carregar as datas disponíveis.";
       }
     }
 
-    loadAvailability(); // Carrega as datas livres ao abrir a página
+    loadAvailability(); // Carrega a disponibilidade ao abrir a página
 
     // Função de envio do formulário
     async function submitForm() {
@@ -156,7 +152,7 @@ data.rooms.forEach((room, roomIndex) => {
         company: form.company.value,
         phone: form.phone.value,
         people: parseInt(form.people.value),
-        selectedDates // Coleta as datas selecionadas
+        selectedDates // Captura as datas selecionadas
       };
 
       try {
@@ -182,10 +178,5 @@ data.rooms.forEach((room, roomIndex) => {
   </script>
 </body>
 </html>
-
-
-
-
-
 
 
