@@ -10,14 +10,24 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      max-width: 500px;
+      max-width: 900px;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    .form-container {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
     }
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
     }
-    input, select, textarea, button {
+    input, button {
       width: 100%;
       padding: 10px;
       margin-bottom: 20px;
@@ -33,69 +43,100 @@
     button:hover {
       background-color: #45a049;
     }
-    .availability {
-      margin-bottom: 20px;
-      padding: 10px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
       border: 1px solid #ddd;
-      background-color: #f9f9f9;
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .available {
+      background-color: #d4edda; /* Verde claro para disponível */
+    }
+    .occupied {
+      background-color: #f8d7da; /* Vermelho claro para ocupado */
     }
   </style>
 </head>
 <body>
-  <h2>Formulário de Reserva</h2>
-  <form id="reservationForm">
-    <label for="name">Nome</label>
-    <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+  <h2>Reserva de Quartos</h2>
+  <div class="form-container">
+    <h3>Informações do Cliente</h3>
+    <form id="reservationForm">
+      <label for="name">Nome</label>
+      <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
 
-    <label for="company">Empresa</label>
-    <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+      <label for="company">Empresa</label>
+      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
 
-    <label for="phone">Telefone</label>
-    <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
+      <label for="phone">Telefone</label>
+      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
 
-    <label for="people">Nº de Pessoas</label>
-    <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
+      <label for="people">Nº de Pessoas</label>
+      <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
 
-    <h3>Datas Disponíveis por Quarto</h3>
-    <div id="availability" class="availability">
-      Carregando datas disponíveis...
-    </div>
+      <button type="button" onclick="submitForm()">Enviar</button>
+    </form>
+  </div>
 
-    <label for="dates">Datas Selecionadas</label>
-    <textarea id="dates" name="dates" placeholder="Digite as datas desejadas"></textarea>
-
-    <button type="button" onclick="submitForm()">Enviar</button>
-  </form>
+  <h3>Disponibilidade de Quartos</h3>
+  <div id="availability">
+    <!-- A tabela de disponibilidade será preenchida dinamicamente -->
+  </div>
 
   <script>
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
+
         const response = await fetch("https://script.google.com/macros/s/AKfycbzEsXUF5NtJ3havzEbYEe8Gdf7J0LF8lpNC9Vk1M308lir8jUCwpdjnw5LASB6-XRyB/exec");
         const data = await response.json();
 
         const availabilityDiv = document.getElementById("availability");
-        availabilityDiv.innerHTML = ""; // Limpa o conteúdo
+        const table = document.createElement("table");
 
-        // Exibe os quartos e suas datas disponíveis
-        data.rooms.forEach((room, index) => {
-          const roomDiv = document.createElement("div");
-          roomDiv.innerHTML = `<strong>Quarto ${room.name}:</strong> ${
-            room.availability.map((status, i) => {
-              return status === "Disponível" ? data.dates[i] : `<del>${data.dates[i]}</del>`;
-            }).join(", ")
-          }`;
-          availabilityDiv.appendChild(roomDiv);
+        // Cria o cabeçalho da tabela
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        headerRow.innerHTML = `
+          <th>Quarto</th>
+          ${data.dates.map(date => `<th>${date}</th>`).join("")}
+        `;
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Cria as linhas da tabela com disponibilidade
+        const tbody = document.createElement("tbody");
+        data.rooms.forEach(room => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${room.name}</td>
+            ${room.availability.map(status => `
+              <td class="${status === "Disponível" ? "available" : "occupied"}">
+                ${status}
+              </td>`).join("")}
+          `;
+          tbody.appendChild(row);
         });
+        table.appendChild(tbody);
+
+        availabilityDiv.appendChild(table);
       } catch (error) {
         console.error("Erro ao carregar datas disponíveis:", error);
         document.getElementById("availability").innerText = "Erro ao carregar as datas disponíveis.";
       }
     }
 
-    loadAvailability(); // Chama a função ao carregar a página
+    loadAvailability(); // Carrega as datas livres ao abrir a página
 
-    // Envia os dados para o servidor
+    // Função de envio do formulário
     async function submitForm() {
       const form = document.getElementById('reservationForm');
 
@@ -104,7 +145,7 @@
         company: form.company.value,
         phone: form.phone.value,
         people: parseInt(form.people.value),
-        selectedDates: form.dates.value.split(',').map(date => date.trim())
+        selectedDates: [] // Você pode adicionar uma lógica para capturar datas específicas, se necessário
       };
 
       try {
@@ -130,4 +171,5 @@
   </script>
 </body>
 </html>
+
 
