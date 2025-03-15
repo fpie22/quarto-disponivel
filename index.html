@@ -1,49 +1,11 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Disponibilidade de Quartos</title>
-  <style>
-    .available {
-      background-color: #d4edda; /* Verde claro */
-    }
-    .occupied {
-      background-color: #f8d7da; /* Vermelho claro */
-      text-align: center;
-    }
-    form {
-      margin-bottom: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-  </style>
 </head>
 <body>
-  <h1>Disponibilidade de Quartos</h1>
-
-  <!-- Formulário para os dados do cliente -->
-  <form id="clientForm">
-    <label for="clientName">Nome:</label>
-    <input type="text" id="clientName" name="clientName" required>
-    <label for="clientCompany">Empresa:</label>
-    <input type="text" id="clientCompany" name="clientCompany">
-    <label for="clientPhone">Telefone:</label>
-    <input type="tel" id="clientPhone" name="clientPhone" required>
-    <label for="clientPeople">Nº de Pessoas:</label>
-    <input type="number" id="clientPeople" name="clientPeople" min="1" required>
-  </form>
-
-  <!-- Tabela para disponibilidade -->
   <table id="availabilityTable">
     <thead>
       <tr></tr> <!-- Cabeçalhos preenchidos dinamicamente -->
@@ -53,27 +15,20 @@
     </tbody>
   </table>
 
-  <!-- Botão de envio -->
-  <button id="submitButton">Enviar Seleção</button>
-
   <script>
-    document.addEventListener("DOMContentLoaded", fetchRealData);
-
     async function fetchRealData() {
       try {
-        console.log("Buscando dados do Web App...");
-
-        const url = "https://script.google.com/macros/s/AKfycbzW2q_Edb8vJw-MN7ma7ggiaRdpg0i28DM_bwGECh0WxTj_THC5Ktj6tTPZzOCb4Skp1A/exec"; // Substitua pelo seu URL
+        const url = "https://script.google.com/macros/s/AKfycby7CCwzciJQDdFAteJg81xrRCgvfspZm1PiuLk-rD9MX-tEeIVPH_dEpazGKJDetP_WaQ/exec"; // Substitua pelo URL do seu Web App
         const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error("Erro ao buscar os dados: " + response.statusText);
+          throw new Error("Erro ao buscar dados do servidor.");
         }
 
         const data = await response.json();
         populateTable(data);
       } catch (error) {
-        console.error("Erro ao buscar os dados:", error);
+        console.error("Erro ao buscar dados:", error);
       }
     }
 
@@ -81,16 +36,11 @@
       const tableHeader = document.querySelector("#availabilityTable thead tr");
       const tableBody = document.querySelector("#availabilityTable tbody");
 
-      if (!data || !data.dates || !data.rooms) {
-        console.error("Dados inválidos recebidos:", data);
-        return;
-      }
-
-      // Configuração dos cabeçalhos (datas)
+      // Configura os cabeçalhos
       tableHeader.innerHTML = "<th>Quartos</th>" + data.dates.map(date => `<th>${date}</th>`).join("");
       tableBody.innerHTML = "";
 
-      // Preenchimento das linhas de quartos e suas disponibilidades
+      // Preenche os quartos e disponibilidades
       data.rooms.forEach(room => {
         const row = document.createElement("tr");
 
@@ -101,21 +51,12 @@
         room.availability.forEach((availability, index) => {
           const cell = document.createElement("td");
 
-          if (availability === 0) { // Disponível
+          if (availability === 1) { // Disponível
             cell.className = "available";
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.dataset.date = data.dates[index];
             checkbox.dataset.room = room.name;
-
-            checkbox.addEventListener("change", (event) => {
-              if (event.target.checked) {
-                console.log(`Selecionado: ${room.name} na data ${data.dates[index]}`);
-              } else {
-                console.log(`Desmarcado: ${room.name} na data ${data.dates[index]}`);
-              }
-            });
-
             cell.appendChild(checkbox);
           } else { // Ocupado
             cell.className = "occupied";
@@ -127,66 +68,9 @@
 
         tableBody.appendChild(row);
       });
-
-      console.log("Tabela preenchida com sucesso!");
     }
 
-    document.getElementById("submitButton").addEventListener("click", () => {
-      const selectedRooms = [];
-      document.querySelectorAll("#availabilityTable input[type='checkbox']:checked").forEach(checkbox => {
-        selectedRooms.push({
-          room: checkbox.dataset.room,
-          date: checkbox.dataset.date
-        });
-      });
-
-      const clientName = document.getElementById("clientName").value;
-      const clientCompany = document.getElementById("clientCompany").value;
-      const clientPhone = document.getElementById("clientPhone").value;
-      const clientPeople = document.getElementById("clientPeople").value;
-
-      if (!clientName || !clientPhone || !clientPeople || selectedRooms.length === 0) {
-        alert("Por favor, preencha todos os campos obrigatórios e selecione pelo menos um quarto.");
-        return;
-      }
-
-      const postData = {
-        name: clientName,
-        company: clientCompany,
-        phone: clientPhone,
-        people: clientPeople,
-        selectedDates: selectedRooms
-      };
-
-      console.log("Enviando dados ao servidor:", postData);
-
-      // Enviar os dados para o Web App via POST
-      fetch("https://script.google.com/macros/s/{SEU_SCRIPT_ID}/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(postData)
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === "success") {
-            alert("Dados enviados com sucesso!");
-            document.getElementById("clientForm").reset();
-            document.querySelectorAll("#availabilityTable input[type='checkbox']").forEach(checkbox => {
-              checkbox.checked = false;
-            });
-          } else {
-            alert("Erro ao enviar os dados: " + data.message);
-          }
-        })
-        .catch(error => {
-          console.error("Erro ao enviar os dados:", error);
-          alert("Erro ao enviar os dados. Confira o console para mais detalhes.");
-        });
-    });
+    window.onload = fetchRealData;
   </script>
 </body>
 </html>
-
-
