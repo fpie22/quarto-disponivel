@@ -6,6 +6,7 @@
   <title>Disponibilidade de Quartos</title>
 </head>
 <body>
+  <h1>Disponibilidade de Quartos</h1>
   <table id="availabilityTable">
     <thead>
       <tr></tr> <!-- Cabeçalhos preenchidos dinamicamente -->
@@ -16,19 +17,23 @@
   </table>
 
   <script>
+    document.addEventListener("DOMContentLoaded", fetchRealData);
+
     async function fetchRealData() {
       try {
-        const url = "https://script.google.com/macros/s/AKfycbyVX2gyV4be2MvautcBzMlZT3_1Tb5TGkwBfXh4-q2_NMxm2vSQnxsAx-vz3DDyz6nLIA/exec"; // Substitua pelo URL do seu Web App
+        console.log("Buscando dados do Web App...");
+
+        const url = "https://script.google.com/macros/s/AKfycbwSHvJ1R3M692v_G4C_r4wNQe83qipyY3JyM3_pbWsYpXX1pf699aOWzpCO6Bt2Yft27g/exec"; // Substitua pelo seu URL
         const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error("Erro ao buscar dados do servidor.");
+          throw new Error("Erro ao buscar os dados: " + response.statusText);
         }
 
         const data = await response.json();
         populateTable(data);
       } catch (error) {
-        console.error("Erro ao buscar dados:", error);
+        console.error("Erro ao buscar os dados:", error);
       }
     }
 
@@ -36,11 +41,14 @@
       const tableHeader = document.querySelector("#availabilityTable thead tr");
       const tableBody = document.querySelector("#availabilityTable tbody");
 
-      // Configura os cabeçalhos
+      if (!data || !data.dates || !data.rooms) {
+        console.error("Dados inválidos recebidos:", data);
+        return;
+      }
+
       tableHeader.innerHTML = "<th>Quartos</th>" + data.dates.map(date => `<th>${date}</th>`).join("");
       tableBody.innerHTML = "";
 
-      // Preenche os quartos e disponibilidades
       data.rooms.forEach(room => {
         const row = document.createElement("tr");
 
@@ -57,6 +65,15 @@
             checkbox.type = "checkbox";
             checkbox.dataset.date = data.dates[index];
             checkbox.dataset.room = room.name;
+
+            checkbox.addEventListener("change", (event) => {
+              if (event.target.checked) {
+                console.log(`Selecionado: ${room.name} na data ${data.dates[index]}`);
+              } else {
+                console.log(`Desmarcado: ${room.name} na data ${data.dates[index]}`);
+              }
+            });
+
             cell.appendChild(checkbox);
           } else { // Ocupado
             cell.className = "occupied";
@@ -68,9 +85,10 @@
 
         tableBody.appendChild(row);
       });
-    }
 
-    window.onload = fetchRealData;
+      console.log("Tabela preenchida com sucesso!");
+    }
   </script>
 </body>
 </html>
+
