@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Disponibilidade de Quartos</title>
+  <title>Reserva de Quartos Portela</title>
   <style>
     body { font-family: Arial, sans-serif; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <h1 style="text-align: center;">Disponibilidade de Quartos</h1>
+  <h1 style="text-align: center;">Reserva de Quartos Portela</h1>
 
   <!-- Formulário para o cliente se registrar -->
   <form id="clientForm">
@@ -48,7 +48,7 @@
     // Função para buscar os dados da API do Google Apps Script
     async function fetchRealData() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyJEj91FW5Tgxef4btCobp-QFSVPMet9TC7wEDyPRMbau8ZopKs_SS63S3W1EAO_UVhgw/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwo_I3OHAOEz_n-TYar0znhUhBdFD_UzYRWu4A-cBqN1lxuSNz0HUNW1uBBlSPFdaqeQg/exec");
         const data = await response.json();
         populateTable(data); // Chama a função para preencher a tabela
       } catch (error) {
