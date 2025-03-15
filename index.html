@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -32,6 +33,12 @@
     button:hover {
       background-color: #45a049;
     }
+    .availability {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
   </style>
 </head>
 <body>
@@ -49,17 +56,49 @@
     <label for="people">Nº de Pessoas</label>
     <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
 
+    <h3>Datas Disponíveis por Quarto</h3>
+    <div id="availability" class="availability">
+      Carregando datas disponíveis...
+    </div>
+
     <label for="dates">Datas Selecionadas</label>
-    <textarea id="dates" name="dates" placeholder="Digite as datas, separadas por vírgulas"></textarea>
+    <textarea id="dates" name="dates" placeholder="Digite as datas desejadas"></textarea>
 
     <button type="button" onclick="submitForm()">Enviar</button>
   </form>
 
   <script>
+    // Carrega as datas livres do Web App
+    async function loadAvailability() {
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzEsXUF5NtJ3havzEbYEe8Gdf7J0LF8lpNC9Vk1M308lir8jUCwpdjnw5LASB6-XRyB/exec");
+        const data = await response.json();
+
+        const availabilityDiv = document.getElementById("availability");
+        availabilityDiv.innerHTML = ""; // Limpa o conteúdo
+
+        // Exibe os quartos e suas datas disponíveis
+        data.rooms.forEach((room, index) => {
+          const roomDiv = document.createElement("div");
+          roomDiv.innerHTML = `<strong>Quarto ${room.name}:</strong> ${
+            room.availability.map((status, i) => {
+              return status === "Disponível" ? data.dates[i] : `<del>${data.dates[i]}</del>`;
+            }).join(", ")
+          }`;
+          availabilityDiv.appendChild(roomDiv);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar datas disponíveis:", error);
+        document.getElementById("availability").innerText = "Erro ao carregar as datas disponíveis.";
+      }
+    }
+
+    loadAvailability(); // Chama a função ao carregar a página
+
+    // Envia os dados para o servidor
     async function submitForm() {
       const form = document.getElementById('reservationForm');
 
-      // Coleta os dados do formulário
       const postData = {
         name: form.name.value,
         company: form.company.value,
@@ -69,8 +108,7 @@
       };
 
       try {
-        // Envia os dados para o Web App do Google Apps Script
-          const url = "https://script.google.com/macros/s/AKfycby7CCwzciJQDdFAteJg81xrRCgvfspZm1PiuLk-rD9MX-tEeIVPH_dEpazGKJDetP_WaQ/exec"; // Substitua pelo URL do seu Web App
+        const response = await fetch("https://script.google.com/macros/s/{SEU_SCRIPT_ID}/exec", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
