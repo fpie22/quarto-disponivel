@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -112,16 +113,19 @@
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Cria as linhas da tabela com disponibilidade
+        // Cria as linhas da tabela com disponibilidade e caixas de seleção
         const tbody = document.createElement("tbody");
-        data.rooms.forEach(room => {
+        data.rooms.forEach((room, roomIndex) => {
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${room.name}</td>
-            ${room.availability.map(status => `
+            ${room.availability.map((status, dateIndex) => `
               <td class="${status === "Disponível" ? "available" : "occupied"}">
-                ${status}
-              </td>`).join("")}
+                ${status === "Disponível"
+                  ? `<input type="checkbox" name="room-${roomIndex}-date-${dateIndex}" value="${data.dates[dateIndex]}" />`
+                  : "Ocupado"}
+              </td>
+            `).join("")}
           `;
           tbody.appendChild(row);
         });
@@ -139,13 +143,15 @@
     // Função de envio do formulário
     async function submitForm() {
       const form = document.getElementById('reservationForm');
+      const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+        .map(checkbox => checkbox.value);
 
       const postData = {
         name: form.name.value,
         company: form.company.value,
         phone: form.phone.value,
         people: parseInt(form.people.value),
-        selectedDates: [] // Você pode adicionar uma lógica para capturar datas específicas, se necessário
+        selectedDates // Coleta as datas selecionadas
       };
 
       try {
@@ -171,5 +177,10 @@
   </script>
 </body>
 </html>
+
+
+
+
+
 
 
