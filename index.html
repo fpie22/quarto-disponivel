@@ -50,7 +50,8 @@
     // Função para buscar os dados da API do Google Apps Script
     async function fetchRealData() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbysQtrVlw_ZKobxOh03qbLxlwbIv_lDOYVpu0qlvUUeu4Msd8KBCd_Su8eXTerq9osAaQ/exec");
+     const response = await fetch("https://script.google.com/macros/s/AKfycbww-8mF0wxq6q0xFhZhhxxW8Yi9Pq0VSvLjBKuJPUjh8xMKck9dsdGr2dkIm34cAqqF_Q/exec");
+
         if (!response.ok) {
           throw new Error("Erro ao buscar dados da API.");
         }
