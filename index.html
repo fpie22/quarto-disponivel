@@ -1,76 +1,95 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Disponibilidade de Quartos</title>
+  <title>Reserva de Quartos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 500px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <table id="availabilityTable">
-    <thead>
-      <tr></tr> <!-- Cabeçalhos preenchidos dinamicamente -->
-    </thead>
-    <tbody>
-      <!-- Linhas preenchidas dinamicamente -->
-    </tbody>
-  </table>
+  <h2>Formulário de Reserva</h2>
+  <form id="reservationForm">
+    <label for="name">Nome</label>
+    <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+
+    <label for="company">Empresa</label>
+    <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+
+    <label for="phone">Telefone</label>
+    <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
+
+    <label for="people">Nº de Pessoas</label>
+    <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
+
+    <label for="dates">Datas Selecionadas</label>
+    <textarea id="dates" name="dates" placeholder="Digite as datas, separadas por vírgulas"></textarea>
+
+    <button type="button" onclick="submitForm()">Enviar</button>
+  </form>
 
   <script>
-    async function fetchRealData() {
+    async function submitForm() {
+      const form = document.getElementById('reservationForm');
+
+      // Coleta os dados do formulário
+      const postData = {
+        name: form.name.value,
+        company: form.company.value,
+        phone: form.phone.value,
+        people: parseInt(form.people.value),
+        selectedDates: form.dates.value.split(',').map(date => date.trim())
+      };
+
       try {
-        const url = "https://script.google.com/macros/s/AKfycby7CCwzciJQDdFAteJg81xrRCgvfspZm1PiuLk-rD9MX-tEeIVPH_dEpazGKJDetP_WaQ/exec"; // Substitua pelo URL do seu Web App
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error("Erro ao buscar dados do servidor.");
-        }
-
-        const data = await response.json();
-        populateTable(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    }
-
-    function populateTable(data) {
-      const tableHeader = document.querySelector("#availabilityTable thead tr");
-      const tableBody = document.querySelector("#availabilityTable tbody");
-
-      // Configura os cabeçalhos
-      tableHeader.innerHTML = "<th>Quartos</th>" + data.dates.map(date => `<th>${date}</th>`).join("");
-      tableBody.innerHTML = "";
-
-      // Preenche os quartos e disponibilidades
-      data.rooms.forEach(room => {
-        const row = document.createElement("tr");
-
-        const roomCell = document.createElement("td");
-        roomCell.textContent = room.name;
-        row.appendChild(roomCell);
-
-        room.availability.forEach((availability, index) => {
-          const cell = document.createElement("td");
-
-          if (availability === 1) { // Disponível
-            cell.className = "available";
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.dataset.date = data.dates[index];
-            checkbox.dataset.room = room.name;
-            cell.appendChild(checkbox);
-          } else { // Ocupado
-            cell.className = "occupied";
-            cell.textContent = "Ocupado";
-          }
-
-          row.appendChild(cell);
+        // Envia os dados para o Web App do Google Apps Script
+          const url = "https://script.google.com/macros/s/AKfycby7CCwzciJQDdFAteJg81xrRCgvfspZm1PiuLk-rD9MX-tEeIVPH_dEpazGKJDetP_WaQ/exec"; // Substitua pelo URL do seu Web App
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(postData)
         });
 
-        tableBody.appendChild(row);
-      });
+        const result = await response.json();
+        if (result.status === "success") {
+          alert("Reserva enviada com sucesso!");
+        } else {
+          alert("Erro ao enviar a reserva: " + result.message);
+        }
+      } catch (error) {
+        console.error("Erro ao enviar:", error);
+        alert("Erro ao enviar o formulário.");
+      }
     }
-
-    window.onload = fetchRealData;
   </script>
 </body>
 </html>
+
