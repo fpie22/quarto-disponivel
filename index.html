@@ -97,7 +97,7 @@
     async function loadAvailability() {
       try {
 
-        const response = await fetch("https://script.google.com/macros/s/AKfycbylqtL41QNTN4-mNn9k_K__XyI_O2SFk8JFtRDNaNdwbNSw-_r45u5eWgbxAHN4RYuWRA/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbx8YBmh7085d1p84ALbGatbf6aepLLDET5rLdZkAE16LjwKQ4Dh7893sqddrQQ2DgBs/exec");
         const data = await response.json();
 
         const availabilityDiv = document.getElementById("availability");
@@ -115,20 +115,24 @@
 
         // Cria as linhas da tabela com disponibilidade e caixas de seleção
         const tbody = document.createElement("tbody");
-        data.rooms.forEach((room, roomIndex) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${room.name}</td>
-            ${room.availability.map((status, dateIndex) => `
-              <td class="${status === "Disponível" ? "available" : "occupied"}">
-                ${status === "Disponível"
-                  ? `<input type="checkbox" name="room-${roomIndex}-date-${dateIndex}" value="${data.dates[dateIndex]}" />`
-                  : "Ocupado"}
-              </td>
-            `).join("")}
-          `;
-          tbody.appendChild(row);
-        });
+	data.rooms.forEach((room, roomIndex) => {
+ 	 const row = document.createElement("tr");
+
+ 	 // Insere cada quarto e sua disponibilidade
+ 	 row.innerHTML = `
+ 	   <td>${room.name}</td>
+ 	   ${room.availability.map((status, dateIndex) => `
+ 	     <td class="${status === "Disponível" ? "available" : "occupied"}">
+ 	       ${status === "Disponível"
+ 	         ? `<input type="checkbox" name="room-${roomIndex}-date-${dateIndex}" value="${room.name} - ${data.dates[dateIndex]}" />`
+  	        : "Ocupado"}
+ 	     </td>
+ 	   `).join("")}
+	  `;
+
+  tbody.appendChild(row);
+});
+
         table.appendChild(tbody);
 
         availabilityDiv.appendChild(table);
