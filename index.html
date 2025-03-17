@@ -90,7 +90,7 @@
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbzoKR18ODyWA7P5HM0IDy8bVOQDSL0FwJh02oS9MFhKlheEUI24lPpjywpbYOeN4cTIzQ/exec"); // Substitua pelo seu Script ID
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyyNP3WqbbctOtgnysVWtilMt1m1RYunTBGC6Y5_Y_o5TTnk7jjoxNy0aq0jKCbQqliDQ/exec"); // Substitua pelo seu Script ID
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
@@ -146,39 +146,40 @@
     loadAvailability(); // Carrega a disponibilidade ao abrir a página
 
     // Função de envio do formulário
-    async function submitForm() {
-      const form = document.getElementById('reservationForm');
-      const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-        .map(checkbox => checkbox.value);
+	async function submitForm() {
+  	const form = document.getElementById('reservationForm');
+  	const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+    	.map(checkbox => checkbox.value);
 
-      const postData = {
-        name: form.name.value,
-        company: form.company.value,
-        phone: form.phone.value,
-        people: parseInt(form.people.value),
-        selectedDates // Captura as datas selecionadas
-      };
+  	const postData = {
+    	name: form.name.value,
+    	company: form.company.value,
+    	phone: form.phone.value,
+    	people: parseInt(form.people.value),
+    	selectedDates // Captura as datas selecionadas
+  	};
 
-      try {
-        const response = await fetch("https://script.google.com/macros/s/{SEU_SCRIPT_ID}/exec", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(postData)
-        });
+  	try {
+    	const response = await fetch("https://script.google.com/macros/s/AKfycbyyNP3WqbbctOtgnysVWtilMt1m1RYunTBGC6Y5_Y_o5TTnk7jjoxNy0aq0jKCbQqliDQ/exec", {
+      	method: "POST",
+      	headers: {
+        	"Content-Type": "application/json"
+      	},
+      	body: JSON.stringify(postData)
+    	});
 
-        const result = await response.json();
-        if (result.status === "success") {
-          alert("Reserva enviada com sucesso!");
-        } else {
-          alert("Erro ao enviar a reserva: " + result.message);
-        }
-      } catch (error) {
-        console.error("Erro ao enviar:", error);
-        alert("Erro ao enviar o formulário.");
-      }
-    }
+    	const result = await response.json();
+    	if (result.status === "success") {
+      	alert("Reserva enviada com sucesso!");
+    	} else {
+      	alert("Erro ao enviar a reserva: " + result.message);
+	    }
+  	} catch (error) {
+    	console.error("Erro ao enviar:", error);
+    	alert("Erro ao enviar o formulário.");
+  	}
+}
+
   </script>
 </body>
 </html>
