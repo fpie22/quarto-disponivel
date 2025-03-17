@@ -89,7 +89,7 @@
   <script>
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbybToXNMcNAgZSDNwfq7os9M9eXC9tOXbo_KBRQn8fFIt6d30LXj8Ga-QvWZKYPzLLdiQ/exec");
+        const response = await fetch("https://script.google.com/macros/s/SEU_SCRIPT_ID/exec");
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
@@ -98,10 +98,15 @@
         console.log("Dados recebidos do servidor:", result);
 
         if (result.status !== "success") {
-          throw new Error("Erro no servidor: " + result.message);
+          throw new Error("Erro no servidor: " + (result.message || "Erro desconhecido."));
         }
 
         const data = result.data;
+
+        if (!data || !Array.isArray(data.dates) || !Array.isArray(data.rooms)) {
+          throw new Error("Formato inesperado dos dados retornados.");
+        }
+
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
 
@@ -122,7 +127,7 @@
           row.innerHTML = `
             <td>${room.name}</td>
             ${room.availability.map((status, index) => {
-              const isAvailable = String(status).trim() === "0";
+              const isAvailable = String(status).trim().toLowerCase() === "disponível";
               return `
                 <td>
                   ${isAvailable
@@ -159,7 +164,7 @@
       console.log("Dados a serem enviados:", postData);
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/SEU_SCRIPT_ID/exec", {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyaR4XJjupTKEvPGFxreW914vO9WoD2IzLltHaoCkfy8bci_PYM45desf8YkwvU220ZOg/exec", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -185,4 +190,3 @@
   </script>
 </body>
 </html>
-
