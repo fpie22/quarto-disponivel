@@ -117,11 +117,11 @@
           row.innerHTML = `
             <td>${room.name}</td>
             ${room.availability.map((status, index) => {
-              console.log(`Data: ${data.dates[index]}, Status: ${status}`); // Log de depuração para status de cada data
+              console.log(`Data: ${data.dates[index]}, Status recebido: ${status}`); // Log de depuração
               return `
                 <td>
-                  ${status === "0"
-                    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponivel`
+                  ${status == 0 // Comparação flexível para tratar strings e números
+                    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponível`
                     : "Ocupado"}
                 </td>
               `;
