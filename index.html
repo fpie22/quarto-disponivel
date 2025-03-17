@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,6 +14,34 @@
     h2, h3 {
       text-align: center;
     }
+    .form-container {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -27,69 +56,49 @@
       background-color: #f2f2f2;
       font-weight: bold;
     }
-    input, button, textarea {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    input[type="checkbox"] {
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
 
-  <h3>Disponibilidade de Quartos</h3>
-  <div id="availability">
-    <!-- Tabela gerada dinamicamente -->
+  <!-- Formulário de Reservas -->
+  <div class="form-container">
+    <h3>Informações do Cliente</h3>
+    <form id="reservationForm">
+      <label for="name">Nome</label>
+      <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+
+      <label for="company">Empresa</label>
+      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+
+      <label for="phone">Telefone</label>
+      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
+
+      <label for="people">Nº de Pessoas</label>
+      <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
+
+      <button type="button" onclick="submitForm()">Enviar</button>
+    </form>
   </div>
 
-  <h3>Formulário de Reserva</h3>
-  <form id="reservationForm">
-    <label for="name">Nome:</label>
-    <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
-
-    <label for="company">Empresa:</label>
-    <input type="text" id="company" name="company" placeholder="Digite o nome da empresa">
-
-    <label for="phone">Telefone:</label>
-    <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
-
-    <label for="people">Nº de Pessoas:</label>
-    <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required min="1">
-
-    <label for="selectedDates">Datas Selecionadas:</label>
-    <textarea id="selectedDates" name="selectedDates" rows="4" readonly></textarea>
-
-    <button type="button" onclick="submitReservation()">Enviar</button>
-  </form>
+  <!-- Tabela de Disponibilidade -->
+  <h3>Disponibilidade de Quartos</h3>
+  <div id="availability">
+    <!-- A tabela será gerada dinamicamente aqui -->
+  </div>
 
   <script>
+    // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwEFhiHa0U9YXDGVCTPJyYDJIurL3JoDca_02MmI1hBFFryKbrnBqwWJtVuzYjOaclfNw/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwEFhiHa0U9YXDGVCTPJyYDJIurL3JoDca_02MmI1hBFFryKbrnBqwWJtVuzYjOaclfNw/exec"); // Substitua pelo seu Script ID
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
+        const data = await response.json();
 
-        const result = await response.json();
-        console.log("Dados recebidos do servidor:", result);
-
-        if (!result.dates || !result.rooms) {
-          throw new Error("Formato inesperado dos dados retornados.");
-        }
+        // Exibe o JSON recebido no console
+        console.log("JSON recebido do servidor:", JSON.stringify(data, null, 2));
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -97,72 +106,80 @@
         // Cabeçalhos da tabela
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
-        headerRow.innerHTML = `
-          <th>Quarto</th>
-          ${result.dates.map(date => `<th>${new Date(date).toLocaleDateString('pt-BR')}</th>`).join("")}
-        `;
+        headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${date}</th>`).join("")}`;
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Linhas da tabela (quartos e disponibilidade)
+        // Linhas da tabela
         const tbody = document.createElement("tbody");
-        result.rooms.forEach((room, roomIndex) => {
+        data.rooms.forEach(room => {
+          console.log(`Quarto: ${room.name}`); // Log de depuração para cada quarto
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${room.name || `Quarto ${roomIndex + 1}`}</td>
-            ${room.availability.map((status, dateIndex) => {
-              const isAvailable = status.toLowerCase() === "disponível";
-              return `
-                <td>
-                  ${isAvailable 
-                    ? `<input type="checkbox" value="${room.name} - ${result.dates[dateIndex]}" onchange="updateSelectedDates()"> Disponível`
-                    : "Ocupado"}
-                </td>
-              `;
-            }).join("")}
-          `;
+ 		 <td>${room.name}</td>
+		  ${room.availability.map((status, index) => {
+		  // Normaliza o status para evitar problemas de tipo
+		  const normalizedStatus = String(status).trim();
+  		  console.log(`Data: ${data.dates[index]}, Status normalizado: ${normalizedStatus}`); // Log detalhado
+
+  		  // Comparação simplificada e definitiva
+  		  return `
+  		    <td>
+    		    ${normalizedStatus === "0"
+     		     ? `<input type="checkbox" value="${data.dates[index]}" /> Disponível`
+     		     : "Ocupado"}
+     		 </td>
+  		`;
+ 		 }).join("")}
+	`;
+
           tbody.appendChild(row);
         });
         table.appendChild(tbody);
 
         availabilityDiv.appendChild(table);
       } catch (error) {
-        console.error("Erro ao carregar a tabela:", error);
-        document.getElementById("availability").innerText = "Erro ao carregar os dados.";
+        console.error("Erro ao carregar as datas disponíveis:", error);
+        document.getElementById("availability").innerText = "Erro ao carregar as datas disponíveis.";
       }
     }
 
-    function updateSelectedDates() {
-      const selectedCheckboxes = document.querySelectorAll("input[type='checkbox']:checked");
-      const selectedDates = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
-      document.getElementById("selectedDates").value = selectedDates.join("\n");
-    }
+    loadAvailability(); // Carrega a disponibilidade ao abrir a página
 
-    function submitReservation() {
-      const name = document.getElementById("name").value;
-      const company = document.getElementById("company").value;
-      const phone = document.getElementById("phone").value;
-      const people = document.getElementById("people").value;
-      const selectedDates = document.getElementById("selectedDates").value;
+    // Função de envio do formulário
+    async function submitForm() {
+      const form = document.getElementById('reservationForm');
+      const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+        .map(checkbox => checkbox.value);
 
-      if (!name || !phone || !people || !selectedDates) {
-        alert("Por favor, preencha todos os campos obrigatórios e selecione pelo menos uma data.");
-        return;
-      }
-
-      const reservationData = {
-        name,
-        company,
-        phone,
-        people: parseInt(people, 10),
-        selectedDates: selectedDates.split("\n")
+      const postData = {
+        name: form.name.value,
+        company: form.company.value,
+        phone: form.phone.value,
+        people: parseInt(form.people.value),
+        selectedDates // Captura as datas selecionadas
       };
 
-      console.log("Dados da reserva enviados:", reservationData);
-      alert("Reserva enviada com sucesso! Verifique os detalhes no console.");
-    }
+      try {
+        const response = await fetch("https://script.google.com/macros/s/{SEU_SCRIPT_ID}/exec", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(postData)
+        });
 
-    loadAvailability();
+        const result = await response.json();
+        if (result.status === "success") {
+          alert("Reserva enviada com sucesso!");
+        } else {
+          alert("Erro ao enviar a reserva: " + result.message);
+        }
+      } catch (error) {
+        console.error("Erro ao enviar:", error);
+        alert("Erro ao enviar o formulário.");
+      }
+    }
   </script>
 </body>
 </html>
