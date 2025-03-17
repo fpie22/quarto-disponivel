@@ -73,13 +73,13 @@
     <h3>Informações do Cliente</h3>
     <form id="reservationForm">
       <label for="name">Nome</label>
-      <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+      <input type="text" id="name" name="name" placeholder="Digite seu nome" required autocomplete="name">
 
       <label for="company">Empresa</label>
-      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa" autocomplete="organization">
 
       <label for="phone">Telefone</label>
-      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
+      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required autocomplete="tel">
 
       <label for="people">Nº de Pessoas</label>
       <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
@@ -113,7 +113,7 @@
         }
         const data = await response.json();
 
-        console.log("Dados recebidos do servidor:", data);
+        console.log("Dados recebidos do servidor:", JSON.stringify(data, null, 2)); // Log detalhado
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -132,8 +132,8 @@
           row.innerHTML = `
             <td>${room.name}</td>
             ${room.availability.map(status => `
-              <td class="${status === "Disponível" ? "available" : "occupied"}">
-                ${status === "Disponível" ? `<input type="checkbox" />` : "Ocupado"}
+              <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
+                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" />` : "Ocupado"}
               </td>
             `).join("")}
           `;
