@@ -98,7 +98,7 @@
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbx0H5YEnEnBHYY8emaMobMj47w2Gs9nNjQztJvU8v3AsYG45mTxStjCu29ke_CT3P3C7Q/exec"); // Substitua pelo seu Script ID
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwTz1Bvv8CP-LNQJJCvZFUrlW5T-XKtj94v4RaKlX3bZ801hFFyBJiIn76Q0uQSRN0L0Q/exec"); // Substitua pelo seu Script ID
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
@@ -123,9 +123,10 @@
           row.innerHTML = `
             <td>${room.name}</td>
             ${room.availability.map(status => `
-              <td class="${status === "Disponível" ? "available" : "occupied"}">
-                ${status === "Disponível" ? `<input type="checkbox" />` : "Ocupado"}
-              </td>
+		<td class="${status === "Disponível" ? "available" : "occupied"}">
+ 			 ${status === "Disponível" ? `<input type="checkbox" value="${status}" />` : "Ocupado"}
+		</td>
+
             `).join("")}
           `;
           tbody.appendChild(row);
