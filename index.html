@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -57,12 +55,6 @@
       background-color: #f2f2f2;
       font-weight: bold;
     }
-    .available {
-      background-color: #d4edda; /* Verde claro para disponivel */
-    }
-    .occupied {
-      background-color: #f8d7da; /* Vermelho claro para ocupado */
-    }
   </style>
 </head>
 <body>
@@ -104,8 +96,8 @@
         }
         const data = await response.json();
 
-        console.log(`Status de ${room.name} para a data ${date}: ${status}`);
-
+        // Log para depuração
+        console.log("Dados recebidos do servidor:", data);
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -121,13 +113,10 @@
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
           const row = document.createElement("tr");
-	row.innerHTML = `
-  		<td>${room.name}</td>
-  		${room.availability.map(status => `
-    		<td>${status}</td>
-  		`).join("")}
-	`;
-
+          row.innerHTML = `
+            <td>${room.name}</td>
+            ${room.availability.map(status => `<td>${status}</td>`).join("")}
+          `;
           tbody.appendChild(row);
         });
         table.appendChild(tbody);
@@ -178,5 +167,3 @@
   </script>
 </body>
 </html>
-
-
