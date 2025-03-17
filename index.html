@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -97,7 +96,8 @@
         }
         const data = await response.json();
 
-        console.log("Dados recebidos do servidor:", data);
+        // Exibe o JSON recebido no console
+        console.log("JSON recebido do servidor:", JSON.stringify(data, null, 2));
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -112,18 +112,21 @@
         // Linhas da tabela
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
+          console.log(`Quarto: ${room.name}`); // Log de depuração para cada quarto
           const row = document.createElement("tr");
-	row.innerHTML = `
-  		<td>${room.name}</td>
- 		 ${room.availability.map((status, index) => `
-   		 <td>
-    		  ${status === "0"
-    		    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponivel`
-  		      : "Ocupado"}
-  		  </td>
- 	 `).join("")}
-	`;
-
+          row.innerHTML = `
+            <td>${room.name}</td>
+            ${room.availability.map((status, index) => {
+              console.log(`Data: ${data.dates[index]}, Status: ${status}`); // Log de depuração para status de cada data
+              return `
+                <td>
+                  ${status === "0"
+                    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponivel`
+                    : "Ocupado"}
+                </td>
+              `;
+            }).join("")}
+          `;
           tbody.appendChild(row);
         });
         table.appendChild(tbody);
@@ -174,3 +177,4 @@
   </script>
 </body>
 </html>
+
