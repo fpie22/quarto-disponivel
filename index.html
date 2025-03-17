@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -68,6 +67,9 @@
     <label for="phone">Telefone:</label>
     <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
 
+    <label for="people">Nº de Pessoas:</label>
+    <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required min="1">
+
     <label for="selectedDates">Datas Selecionadas:</label>
     <textarea id="selectedDates" name="selectedDates" rows="4" readonly></textarea>
 
@@ -104,16 +106,16 @@
 
         // Linhas da tabela (quartos e disponibilidade)
         const tbody = document.createElement("tbody");
-        result.rooms.forEach((room, index) => {
+        result.rooms.forEach((room, roomIndex) => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${room.name || `Quarto ${index + 1}`}</td>
+            <td>${room.name || `Quarto ${roomIndex + 1}`}</td>
             ${room.availability.map((status, dateIndex) => {
               const isAvailable = status.toLowerCase() === "disponível";
               return `
                 <td>
                   ${isAvailable 
-                    ? `<input type="checkbox" value="${result.dates[dateIndex]}" onchange="updateSelectedDates()"> Disponível`
+                    ? `<input type="checkbox" value="${room.name} - ${result.dates[dateIndex]}" onchange="updateSelectedDates()"> Disponível`
                     : "Ocupado"}
                 </td>
               `;
@@ -133,16 +135,17 @@
     function updateSelectedDates() {
       const selectedCheckboxes = document.querySelectorAll("input[type='checkbox']:checked");
       const selectedDates = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
-      document.getElementById("selectedDates").value = selectedDates.join(", ");
+      document.getElementById("selectedDates").value = selectedDates.join("\n");
     }
 
     function submitReservation() {
       const name = document.getElementById("name").value;
       const company = document.getElementById("company").value;
       const phone = document.getElementById("phone").value;
+      const people = document.getElementById("people").value;
       const selectedDates = document.getElementById("selectedDates").value;
 
-      if (!name || !phone || !selectedDates) {
+      if (!name || !phone || !people || !selectedDates) {
         alert("Por favor, preencha todos os campos obrigatórios e selecione pelo menos uma data.");
         return;
       }
@@ -151,7 +154,8 @@
         name,
         company,
         phone,
-        selectedDates: selectedDates.split(", ")
+        people: parseInt(people, 10),
+        selectedDates: selectedDates.split("\n")
       };
 
       console.log("Dados da reserva enviados:", reservationData);
@@ -162,6 +166,7 @@
   </script>
 </body>
 </html>
+
 
 
 
