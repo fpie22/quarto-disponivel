@@ -115,18 +115,23 @@
           console.log(`Quarto: ${room.name}`); // Log de depuração para cada quarto
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${room.name}</td>
-            ${room.availability.map((status, index) => {
-              console.log(`Data: ${data.dates[index]}, Status recebido: ${status}`); // Log de depuração
-              return `
-                <td>
-                  ${status == 0 // Comparação flexível para tratar strings e números
-                    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponível`
-                    : "Ocupado"}
-                </td>
-              `;
-            }).join("")}
-          `;
+ 		 <td>${room.name}</td>
+		  ${room.availability.map((status, index) => {
+		  // Normaliza o status para evitar problemas de tipo
+		  const normalizedStatus = String(status).trim();
+  		  console.log(`Data: ${data.dates[index]}, Status normalizado: ${normalizedStatus}`); // Log detalhado
+
+  		  // Comparação simplificada e definitiva
+  		  return `
+  		    <td>
+    		    ${normalizedStatus === "0"
+     		     ? `<input type="checkbox" value="${data.dates[index]}" /> Disponível`
+     		     : "Ocupado"}
+     		 </td>
+  		`;
+ 		 }).join("")}
+	`;
+
           tbody.appendChild(row);
         });
         table.appendChild(tbody);
