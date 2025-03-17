@@ -73,13 +73,13 @@
     <h3>Informações do Cliente</h3>
     <form id="reservationForm">
       <label for="name">Nome</label>
-      <input type="text" id="name" name="name" placeholder="Digite seu nome" required autocomplete="name">
+      <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
 
       <label for="company">Empresa</label>
-      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa" autocomplete="organization">
+      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
 
       <label for="phone">Telefone</label>
-      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required autocomplete="tel">
+      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
 
       <label for="people">Nº de Pessoas</label>
       <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
@@ -111,9 +111,16 @@
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
-        const data = await response.json();
+	const data = {
+ 		 dates: ["17/03/2025", "18/03/2025"],
+ 		 rooms: [
+ 		   { name: "Quarto 1", availability: ["Disponivel", "Ocupado"] },
+ 		   { name: "Quarto 2", availability: [0, 1] } // Para testar com números
+		  ]
+	};
 
-        console.log("Dados recebidos do servidor:", JSON.stringify(data, null, 2)); // Log detalhado
+
+        console.log("Dados recebidos do servidor:", data);
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -127,14 +134,11 @@
 
         // Linhas da tabela
         const tbody = document.createElement("tbody");
-        data.rooms.forEach(room => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${room.name}</td>
-            ${room.availability.map(status => `
-              <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
-                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" />` : "Ocupado"}
-              </td>
+	data.rooms.forEach(room => {
+	  room.availability = room.availability.map(status => String(status).trim());
+	});
+
+
             `).join("")}
           `;
           tbody.appendChild(row);
