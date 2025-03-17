@@ -105,20 +105,10 @@
     // Carrega as datas livres do Web App
 async function loadAvailability() {
   try {
-const response = await fetch("https://script.google.com/macros/s/AKfycbxC989pvlhQpN6PiG2_rB0qowwoEB_1df-8HDW6jMs3L3O6fSEDX1JCRKXF4gSd759aNQ/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    name: "Fernando",
-    company: "Empresa X",
-    phone: "123456789",
-    people: 2,
-    selectedDates: ["2025-03-17", "2025-03-18"]
-  })
-});
-
+    const response = await fetch("https://script.google.com/macros/s/AKfycbwR6gpLiPt2gpqnTfAkiovLKJPSIZk3-jWTI54mCqLrP1Fqhrdxrdcwsik11Ax9jxmTlQ/exec");
+    if (!response.ok) {
+      throw new Error("Erro ao buscar os dados: " + response.status);
+    }
     const data = await response.json();
 
     // Adicione os logs aqui
