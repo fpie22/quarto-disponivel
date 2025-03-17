@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,13 +12,6 @@
     }
     h2, h3 {
       text-align: center;
-    }
-    .form-container {
-      margin-bottom: 20px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background-color: #f9f9f9;
     }
     table {
       width: 100%;
@@ -39,16 +31,15 @@
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
-
   <h3>Disponibilidade de Quartos</h3>
   <div id="availability">
-    <!-- A tabela será gerada dinamicamente aqui -->
+    <!-- Tabela gerada dinamicamente -->
   </div>
 
   <script>
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyNxQxN9fn4mD2N0m_psd-2Enbmih9SYLF1AMUjArmv5-EhbFv3CNZt-CNRzhuUtnJOUQ/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwEFhiHa0U9YXDGVCTPJyYDJIurL3JoDca_02MmI1hBFFryKbrnBqwWJtVuzYjOaclfNw/exec");
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
@@ -57,7 +48,7 @@
         console.log("Dados recebidos do servidor:", result);
 
         if (!result.dates || !result.rooms) {
-          throw new Error("Formato inesperado dos dados retornados.");
+          throw new Error("Dados retornados estão incompletos.");
         }
 
         const availabilityDiv = document.getElementById("availability");
@@ -73,12 +64,12 @@
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Linhas da tabela
+        // Linhas da tabela (quartos e disponibilidade)
         const tbody = document.createElement("tbody");
         result.rooms.forEach(room => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${room.name}</td>
+            <td>${room.name || "Sem Nome"}</td>
             ${room.availability.map(status => `<td>${status}</td>`).join("")}
           `;
           tbody.appendChild(row);
