@@ -97,8 +97,7 @@
         }
         const data = await response.json();
 
-        console.log(`Status: ${status}, Data: ${data.dates[index]}`);
-
+        console.log("Dados recebidos do servidor:", data);
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -114,17 +113,16 @@
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
           const row = document.createElement("tr");
-	row.innerHTML = `
-  		<td>${room.name}</td>
- 		 ${room.availability.map((status, index) => `
-   		 <td>
-  		    ${status === "0" 
-    		    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponivel`
-    		    : "Ocupado"}
-  		  </td>
- 	 `).join("")}
-	`;
-
+          row.innerHTML = `
+            <td>${room.name}</td>
+            ${room.availability.map((status, index) => `
+              <td>
+                ${status === "Disponivel"
+                  ? `<input type="checkbox" value="${data.dates[index]}" /> Disponivel`
+                  : "Ocupado"}
+              </td>
+            `).join("")}
+          `;
           tbody.appendChild(row);
         });
         table.appendChild(tbody);
@@ -175,4 +173,3 @@
   </script>
 </body>
 </html>
-
