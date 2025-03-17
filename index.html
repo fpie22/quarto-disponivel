@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -27,14 +28,51 @@
       background-color: #f2f2f2;
       font-weight: bold;
     }
+    input, button, textarea {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
+
   <h3>Disponibilidade de Quartos</h3>
   <div id="availability">
     <!-- Tabela gerada dinamicamente -->
   </div>
+
+  <h3>Formulário de Reserva</h3>
+  <form id="reservationForm">
+    <label for="name">Nome:</label>
+    <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+
+    <label for="company">Empresa:</label>
+    <input type="text" id="company" name="company" placeholder="Digite o nome da empresa">
+
+    <label for="phone">Telefone:</label>
+    <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
+
+    <label for="selectedDates">Datas Selecionadas:</label>
+    <textarea id="selectedDates" name="selectedDates" rows="4" readonly></textarea>
+
+    <button type="button" onclick="submitReservation()">Enviar</button>
+  </form>
 
   <script>
     async function loadAvailability() {
@@ -48,7 +86,7 @@
         console.log("Dados recebidos do servidor:", result);
 
         if (!result.dates || !result.rooms) {
-          throw new Error("Dados retornados estão incompletos.");
+          throw new Error("Formato inesperado dos dados retornados.");
         }
 
         const availabilityDiv = document.getElementById("availability");
@@ -66,11 +104,20 @@
 
         // Linhas da tabela (quartos e disponibilidade)
         const tbody = document.createElement("tbody");
-        result.rooms.forEach(room => {
+        result.rooms.forEach((room, index) => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${room.name || "Sem Nome"}</td>
-            ${room.availability.map(status => `<td>${status}</td>`).join("")}
+            <td>${room.name || `Quarto ${index + 1}`}</td>
+            ${room.availability.map((status, dateIndex) => {
+              const isAvailable = status.toLowerCase() === "disponível";
+              return `
+                <td>
+                  ${isAvailable 
+                    ? `<input type="checkbox" value="${result.dates[dateIndex]}" onchange="updateSelectedDates()"> Disponível`
+                    : "Ocupado"}
+                </td>
+              `;
+            }).join("")}
           `;
           tbody.appendChild(row);
         });
@@ -83,7 +130,40 @@
       }
     }
 
+    function updateSelectedDates() {
+      const selectedCheckboxes = document.querySelectorAll("input[type='checkbox']:checked");
+      const selectedDates = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+      document.getElementById("selectedDates").value = selectedDates.join(", ");
+    }
+
+    function submitReservation() {
+      const name = document.getElementById("name").value;
+      const company = document.getElementById("company").value;
+      const phone = document.getElementById("phone").value;
+      const selectedDates = document.getElementById("selectedDates").value;
+
+      if (!name || !phone || !selectedDates) {
+        alert("Por favor, preencha todos os campos obrigatórios e selecione pelo menos uma data.");
+        return;
+      }
+
+      const reservationData = {
+        name,
+        company,
+        phone,
+        selectedDates: selectedDates.split(", ")
+      };
+
+      console.log("Dados da reserva enviados:", reservationData);
+      alert("Reserva enviada com sucesso! Verifique os detalhes no console.");
+    }
+
     loadAvailability();
   </script>
 </body>
 </html>
+
+
+
+
+
