@@ -98,13 +98,14 @@
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbzt7k2T65RAs9zjDm0jTOGs42xx5-yP2q5uz7KkgIKXMwfMCYWkJ4kwUWpyhlBMnjQSoQ/exec"); // Substitua pelo seu Script ID
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzoKR18ODyWA7P5HM0IDy8bVOQDSL0FwJh02oS9MFhKlheEUI24lPpjywpbYOeN4cTIzQ/exec"); // Substitua pelo seu Script ID
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
         const data = await response.json();
 
-        console.log("Dados recebidos do servidor:", data);
+        console.log(`Status de ${room.name} para a data ${date}: ${status}`);
+
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
@@ -120,15 +121,13 @@
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
           const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${room.name}</td>
-            ${room.availability.map(status => `
-		<td class="${status === "Disponivel" ? "available" : "occupied"}">
- 			 ${status === "Disponivel" ? `<input type="checkbox" value="${status}" />` : "Ocupado"}
-		</td>
+	row.innerHTML = `
+  		<td>${room.name}</td>
+  		${room.availability.map(status => `
+    		<td>${status}</td>
+  		`).join("")}
+	`;
 
-            `).join("")}
-          `;
           tbody.appendChild(row);
         });
         table.appendChild(tbody);
