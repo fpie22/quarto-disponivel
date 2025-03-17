@@ -120,12 +120,12 @@
           row.innerHTML = `
             <td>${room.name}</td>
             ${room.availability.map((status, index) => {
-              const normalizedStatus = String(status).trim().toLowerCase(); // Normaliza o status para evitar inconsistências
-              console.log(`Data: ${data.dates[index]}, Status recebido: ${normalizedStatus}`); // Log detalhado
+              const normalizedStatus = String(status).trim();
+              console.log(`Data: ${data.dates[index]}, Status recebido: ${normalizedStatus}`); // Log de depuração
               return `
                 <td>
                   ${normalizedStatus === "0"
-                    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponível`
+                    ? `<input type="checkbox" value="${data.dates[index]}" /> Disponivel`
                     : "Ocupado"}
                 </td>
               `;
