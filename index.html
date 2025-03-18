@@ -103,7 +103,7 @@
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwR6gpLiPt2gpqnTfAkiovLKJPSIZk3-jWTI54mCqLrP1Fqhrdxrdcwsik11Ax9jxmTlQ/exec"); // Substitua pela URL correta
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwE4kqEkisWLADgZ3KKE0ezmOLw8m8LJkhllJVVFI_UcYAewS-LHtYvF3S2B788BAomlQ/exec"); // Substitua pela URL correta
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
@@ -162,7 +162,7 @@
       };
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwR6gpLiPt2gpqnTfAkiovLKJPSIZk3-jWTI54mCqLrP1Fqhrdxrdcwsik11Ax9jxmTlQ/exec", { // Substitua pela URL correta
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwE4kqEkisWLADgZ3KKE0ezmOLw8m8LJkhllJVVFI_UcYAewS-LHtYvF3S2B788BAomlQ/exec", { // Substitua pela URL correta
           method: "POST",
           headers: {
             "Content-Type": "application/json"
