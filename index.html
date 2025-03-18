@@ -160,6 +160,9 @@
         selectedDates
       };
 
+    // Adicione logs aqui
+  	console.log("Dados do formulário:", postData);
+
       try {
         const response = await fetch("https://script.google.com/macros/s/AKfycbwE4kqEkisWLADgZ3KKE0ezmOLw8m8LJkhllJVVFI_UcYAewS-LHtYvF3S2B788BAomlQ/exec", { // Substitua pela URL correta
           method: "POST",
