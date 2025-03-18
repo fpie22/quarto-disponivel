@@ -102,7 +102,7 @@
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwaYNkE2k2NAtL9WFi-u2gZDhg8zohXNA8_VDj1YsLfpMxdNykWLfKIVPWRG_397pAQTA/exec"); // Substitua pela URL correta
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzSBtSCyKXNgAigJWkrAEdIQ-cm4J1dw6gVi4D1L2svGvg089_S5T0KjN53cYkXtzZ74Q/exec"); // Substitua pela URL correta
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
@@ -164,7 +164,7 @@
   	console.log("Dados do formulário:", postData);
 
       try {
-        const response = await fetch("hhttps://script.google.com/macros/s/AKfycbwaYNkE2k2NAtL9WFi-u2gZDhg8zohXNA8_VDj1YsLfpMxdNykWLfKIVPWRG_397pAQTA/exec", { // Substitua pela URL correta
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzSBtSCyKXNgAigJWkrAEdIQ-cm4J1dw6gVi4D1L2svGvg089_S5T0KjN53cYkXtzZ74Q/exec", { // Substitua pela URL correta
           method: "POST",
           headers: {
             "Content-Type": "application/json"
