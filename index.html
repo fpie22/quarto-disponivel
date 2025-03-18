@@ -103,7 +103,7 @@
     // Função para carregar a disponibilidade dos quartos
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxwZ9477EEVM6wqo7WRIHPlPR9fxpdPg5kI7HPCXzQCo5-yQT1HdsbxRzmvLReUMbdP-A/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbz66iFs7ViCJEFHkGYMO8hwPo62sklI4IZiIJESQcmY2kULBt6tgMUhDST1DUF_LCk/exec");
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
