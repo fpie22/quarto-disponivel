@@ -90,7 +90,8 @@
   </div>
 
   <script>
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbyi5vKCAQ-V0oKBaywT4jauAEm3SQJDPBdSs8LBKW5cDQPOvwidCz3Z_5Dmdsju-EXKzg/exec"; // Substitua pelo ID do seu script
+    // URL do Google Apps Script
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbwvUnJch2PFUNnPwCJLAFHBvhUexUj6TohVZdIEvUOJbVfAiBXo15QbA6xj9TnIoiW40g/exec"; // Substitua "SEU_SCRIPT_ID"
 
     // Função para formatar as datas no formato DD/MM/AAAA
     function formatDate(isoDate) {
@@ -141,7 +142,7 @@
       }
     }
 
-    loadAvailability();
+    loadAvailability(); // Carrega a disponibilidade ao abrir a página
 
     // Função de envio do formulário
     async function submitForm() {
@@ -182,4 +183,3 @@
   </script>
 </body>
 </html>
-
