@@ -102,20 +102,18 @@
     // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwMMrpWapY0ih9SCUdDGbWicUEAs9ZWovV95QCvNAoQ7WlRUYcjt9zojTjHaKucarFJ9Q/exec"); // Substitua pela URL correta
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzcXSjztybMEbckpnDYGV-TFS92iP4RlLTlE0PejX_S2yk6A4L3bdIMihfpmoaeNO7T5w/exec");
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados: " + response.status);
         }
         const data = await response.json();
 
-        // Adicione os logs aqui
         console.log("Datas recebidas:", data.dates);
         console.log("Quartos recebidos:", JSON.stringify(data.rooms, null, 2));
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
 
-        // Continue o processamento normalmente
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
         headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
@@ -156,15 +154,14 @@
         name: form.name.value,
         company: form.company.value,
         phone: form.phone.value,
-        people: form.people.value ? parseInt(form.people.value) : 0, // Adicionado tratamento para valor nulo
+        people: form.people.value ? parseInt(form.people.value) : 0,
         selectedDates
       };
 
-    // Adicione logs aqui
-  	console.log("Dados do formulário:", postData);
+      console.log("Dados do formulário:", postData);
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwMMrpWapY0ih9SCUdDGbWicUEAs9ZWovV95QCvNAoQ7WlRUYcjt9zojTjHaKucarFJ9Q/exec", { // Substitua pela URL correta
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzcXSjztybMEbckpnDYGV-TFS92iP4RlLTlE0PejX_S2yk6A4L3bdIMihfpmoaeNO7T5w/exec", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
