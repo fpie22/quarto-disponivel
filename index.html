@@ -4,64 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva de Quartos</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      max-width: 900px;
-    }
-    h2, h3 {
-      text-align: center;
-    }
-    .form-container {
-      margin-bottom: 20px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background-color: #f9f9f9;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      text-align: center;
-      padding: 8px;
-    }
-    th {
-      background-color: #f2f2f2;
-      font-weight: bold;
-    }
-    .available {
-      background-color: #d4edda; /* Verde claro para disponível */
-    }
-    .occupied {
-      background-color: #f8d7da; /* Vermelho claro para ocupado */
-    }
-  </style>
+  <style> /* ... (Seu CSS aqui) ... */ </style>
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
@@ -71,29 +14,29 @@
     <form id="reservationForm">
       <label for="name">Nome</label>
       <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
-
       <label for="company">Empresa</label>
       <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
-
       <label for="phone">Telefone</label>
       <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required>
-
       <label for="people">Nº de Pessoas</label>
       <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required>
-
       <button type="button" onclick="submitForm()">Enviar</button>
     </form>
   </div>
 
   <h3>Disponibilidade de Quartos</h3>
-  <div id="availability">
-  </div>
+  <div id="availability"></div>
 
   <script>
-    // URL do Google Apps Script
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbzRGILJ5lzLqNJsIq-2YaVPKyGPwK23Nl5XObEsSMZ6bPe3-n0YAvIXoUCy7oiQMt6HKw/exec"; // Substitua "SEU_SCRIPT_ID"
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzRGILJ5lzLqNJsIq-2YaVPKyGPwK23Nl5XObEsSMZ6bPe3-n0YAvIXoUCy7oiQMt6HKw/exec"; // Substitua
 
-    // Função para formatar as datas no formato DD/MM/AAAA
+    async function handleResponse(response) {
+      if (!response.ok) {
+        throw new Error(`Erro HTTP! Status: ${response.status}`);
+      }
+      return await response.json();
+    }
+
     function formatDate(isoDate) {
       const date = new Date(isoDate);
       const day = String(date.getDate()).padStart(2, '0');
@@ -102,18 +45,12 @@
       return `${day}/${month}/${year}`;
     }
 
-    // Carrega as datas livres do Web App
     async function loadAvailability() {
       try {
-        const response = await fetch(scriptUrl);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar os dados: " + response.status);
-        }
-        const data = await response.json();
+        const data = await handleResponse(await fetch(scriptUrl));
 
         const availabilityDiv = document.getElementById("availability");
         const table = document.createElement("table");
-
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
         headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
@@ -138,17 +75,18 @@
         availabilityDiv.appendChild(table);
       } catch (error) {
         console.error("Erro ao carregar as datas disponíveis:", error);
-        document.getElementById("availability").innerText = "Erro ao carregar as datas disponíveis.";
+        document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
       }
     }
 
-    loadAvailability(); // Carrega a disponibilidade ao abrir a página
+    loadAvailability();
 
-    // Função de envio do formulário
     async function submitForm() {
       const form = document.getElementById('reservationForm');
+
+      // Formata as datas para AAAA-MM-DD
       const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-        .map(checkbox => checkbox.value);
+        .map(checkbox => new Date(checkbox.value).toISOString().slice(0, 10));
 
       const postData = {
         name: form.name.value,
@@ -161,15 +99,14 @@
       console.log("Dados do formulário:", postData);
 
       try {
-        const response = await fetch(scriptUrl, {
+        const result = await handleResponse(await fetch(scriptUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(postData)
-        });
+        }));
 
-        const result = await response.json();
         if (result.status === "success") {
           alert("Reserva enviada com sucesso!");
         } else {
@@ -177,7 +114,7 @@
         }
       } catch (error) {
         console.error("Erro ao enviar:", error);
-        alert("Erro ao enviar o formulário.");
+        alert(`Erro ao enviar o formulário: ${error.message}`);
       }
     }
   </script>
