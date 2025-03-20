@@ -28,7 +28,8 @@
   <div id="availability"></div>
 
   <script>
-    const scriptUrl = "https://script.google.com/macros/s/AKfycby5JT0ND9Ue9F9txRiSAxE1FcELem7AHabUhOBAgZxk_k--rOhFTBahuQl6rVx0E4qA9g/exec"; // Substitua
+	const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";      
+
 
     async function handleResponse(response) {
       if (!response.ok) {
@@ -85,38 +86,45 @@
       const form = document.getElementById('reservationForm');
 
       // Formata as datas para AAAA-MM-DD
-      const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-        .map(checkbox => new Date(checkbox.value).toISOString().slice(0, 10));
+  	const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+    	   .map(checkbox => checkbox.value);
 
       const postData = {
         name: form.name.value,
         company: form.company.value,
         phone: form.phone.value,
-        people: form.people.value ? parseInt(form.people.value) : 0,
-        selectedDates
+        people: parseInt(form.people.value),
+       	 selectedDates
       };
 
-      console.log("Dados do formulário:", postData);
+      console.log("Enviando dados:", postData);
 
-      try {
-        const result = await handleResponse(await fetch(scriptUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+ 	 try {
+   	     const response = await fetch(scriptUrl, {
+     		method: "POST",
+      		headers: {
+        		"Content-Type": "application/json"
+     		 },
           body: JSON.stringify(postData)
         }));
 
-        if (result.status === "success") {
-          alert("Reserva enviada com sucesso!");
-        } else {
-          alert("Erro ao enviar a reserva: " + result.message);
-        }
-      } catch (error) {
-        console.error("Erro ao enviar:", error);
-        alert(`Erro ao enviar o formulário: ${error.message}`);
-      }
-    }
+   	 if (!response.ok) {
+    	  throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
+   	 }
+
+    	const result = await response.json();
+    	console.log("Resposta recebida:", result);
+
+    	if (result.status === "success") {
+      		alert("Reserva criada com sucesso!");
+    	} else {
+     	 alert("Erro ao criar reserva: " + result.message);
+    		}
+  	} catch (error) {
+    	  console.error("Erro ao enviar a reserva:", error);
+   	  alert(`Erro ao enviar a reserva: ${error.message}`);
+  	}
+   }
   </script>
 </body>
 </html>
