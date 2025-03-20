@@ -4,7 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva de Quartos</title>
-  <style> /* ... (Seu CSS aqui) ... */ </style>
+  <style>
+    /* Adicione seu CSS aqui */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .available {
+      background-color: #d4edda;
+    }
+
+    .occupied {
+      background-color: #f8d7da;
+    }
+  </style>
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
@@ -28,8 +48,9 @@
   <div id="availability"></div>
 
   <script>
-	const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";      
-
+    const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";
+    let lastRequestTime = 0;
+    const RATE_LIMIT_MS = 500; // Define um intervalo mínimo entre requisições
 
     async function handleResponse(response) {
       if (!response.ok) {
@@ -47,10 +68,19 @@
     }
 
     async function loadAvailability() {
+      const now = Date.now();
+      if (now - lastRequestTime < RATE_LIMIT_MS) {
+        console.warn("Aguarde antes de realizar outra requisição.");
+        return;
+      }
+      lastRequestTime = now;
+
       try {
         const data = await handleResponse(await fetch(scriptUrl));
 
         const availabilityDiv = document.getElementById("availability");
+        availabilityDiv.innerHTML = ""; // Limpa o conteúdo anterior
+
         const table = document.createElement("table");
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
@@ -80,51 +110,51 @@
       }
     }
 
-    loadAvailability();
+    document.addEventListener("DOMContentLoaded", loadAvailability);
 
     async function submitForm() {
       const form = document.getElementById('reservationForm');
 
       // Formata as datas para AAAA-MM-DD
-  	const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-    	   .map(checkbox => checkbox.value);
+      const selectedDates = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+        .map(checkbox => checkbox.value);
 
       const postData = {
         name: form.name.value,
         company: form.company.value,
         phone: form.phone.value,
         people: parseInt(form.people.value),
-       	 selectedDates
+        selectedDates
       };
 
       console.log("Enviando dados:", postData);
 
- 	 try {
-   	     const response = await fetch(scriptUrl, {
-     		method: "POST",
-      		headers: {
-        		"Content-Type": "application/json"
-     		 },
+      try {
+        const response = await fetch(scriptUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(postData)
-        }));
+        });
 
-   	 if (!response.ok) {
-    	  throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
-   	 }
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
+        }
 
-    	const result = await response.json();
-    	console.log("Resposta recebida:", result);
+        const result = await response.json();
+        console.log("Resposta recebida:", result);
 
-    	if (result.status === "success") {
-      		alert("Reserva criada com sucesso!");
-    	} else {
-     	 alert("Erro ao criar reserva: " + result.message);
-    		}
-  	} catch (error) {
-    	  console.error("Erro ao enviar a reserva:", error);
-   	  alert(`Erro ao enviar a reserva: ${error.message}`);
-  	}
-   }
+        if (result.status === "success") {
+          alert("Reserva criada com sucesso!");
+        } else {
+          alert("Erro ao criar reserva: " + result.message);
+        }
+      } catch (error) {
+        console.error("Erro ao enviar a reserva:", error);
+        alert(`Erro ao enviar a reserva: ${error.message}`);
+      }
+    }
   </script>
 </body>
 </html>
