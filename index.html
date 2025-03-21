@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva de Quartos</title>
   <style>
-    /* Adicione seu CSS aqui */
+    /* Estilo atualizado */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -23,6 +23,20 @@
 
     .occupied {
       background-color: #f8d7da;
+    }
+
+    button {
+      font-weight: bold; /* Deixa o texto do botão em negrito */
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3; /* Cor ao passar o mouse */
     }
   </style>
 </head>
@@ -120,9 +134,9 @@
         .map(checkbox => checkbox.value);
 
       const postData = {
-        name: form.name.value,
-        company: form.company.value,
-        phone: form.phone.value,
+        name: form.name.value.substring(0, 30), // Limita a 30 caracteres
+        company: form.company.value.substring(0, 30), // Limita a 30 caracteres
+        phone: form.phone.value.substring(0, 1), // Limita a 1 caractere
         people: parseInt(form.people.value),
         selectedDates
       };
