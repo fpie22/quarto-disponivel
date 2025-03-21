@@ -87,6 +87,18 @@
       return `${day}-${month}-${year}`;
     }
 
+    function getTodayDate() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      return `${day}-${month}-${year}`;
+    }
+
+    function formatRoomName(roomName) {
+      return roomName.replace("Quarto ", "Q"); // Converte "Quarto 8" para "Q8"
+    }
+
     async function loadAvailability() {
       const now = Date.now();
       if (now - lastRequestTime < RATE_LIMIT_MS) {
@@ -104,18 +116,20 @@
         const table = document.createElement("table");
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
-        headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
+        headerRow.innerHTML = `<th>Quarto</th><th>Data da Reserva</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
+          const formattedRoomName = formatRoomName(room.name); // Formata o nome do quarto
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${room.name}</td>
+            <td>${formattedRoomName}</td>
+            <td>${getTodayDate()}</td> <!-- Adiciona a data atual da reserva -->
             ${room.availability.map((status, index) => `
               <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
-                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${room.name}" value="${data.dates[index]}" />` : "Ocupado"}
+                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
               </td>
             `).join("")}
           `;
@@ -164,33 +178,6 @@
         return;
       }
 
-      const roomCapacity = {
-        "8": { max: 2 },
-        "9": { max: 2 },
-        "11": { max: 2 },
-        "7": { max: 3 },
-        "10": { max: 6 },
-        "12": { max: 4 }
-      };
-
-      let totalCapacity = 0;
-
-      selectedDatesAndRooms.forEach(selection => {
-        const roomNumber = selection.room.replace('Quarto ', '');
-        const maxCapacity = roomCapacity[roomNumber]?.max;
-
-        if (maxCapacity) {
-          totalCapacity += maxCapacity;
-        } else {
-          console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
-        }
-      });
-
-      if (totalCapacity < people) {
-        alert(`Capacidade total (${totalCapacity}) insuficiente para ${people} pessoas.`);
-        return;
-      }
-
       const postData = {
         name: form.name.value.substring(0, 30),
         company: form.company.value.substring(0, 30),
@@ -198,7 +185,8 @@
         email: email || "Não informado",
         people,
         selectedDatesAndRooms,
-        reservationDates: selectedDatesAndRooms.map(entry => entry.date)
+        reservationDates: selectedDatesAndRooms.map(entry => entry.date),
+        reservationDate: getTodayDate() // Data atual da reserva incluída no envio
       };
 
       try {
