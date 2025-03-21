@@ -142,24 +142,21 @@
       console.log("Iniciando validação...");
       console.log("Número de pessoas:", people);
 
-      // Validação do telefone
       if (!/^[0-9]{9}$/.test(phone)) {
         alert("O número de telefone deve conter exatamente 9 dígitos.");
         console.error("Falha na validação do telefone");
         return;
       }
 
-      // Validação do número de pessoas
       if (isNaN(people) || people < 1) {
         alert("Por favor, insira o número de pessoas (mínimo de 1).");
         console.error("Falha na validação do número de pessoas");
         return;
       }
 
-      // Captura os quartos e datas selecionados
       const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
         .map(checkbox => {
-          const roomNumber = checkbox.getAttribute('data-room');
+          const roomNumber = checkbox.getAttribute('data-room').replace('Quarto ', '');
           const formattedDate = formatSimpleDate(checkbox.value);
           return { date: formattedDate, room: roomNumber };
         });
@@ -183,7 +180,6 @@
 
       let capacityIssues = [];
 
-      // Verifica as restrições de capacidade dos quartos
       selectedDatesAndRooms.forEach(selection => {
         const roomNumber = selection.room;
         const maxCapacity = roomCapacity[roomNumber]?.max;
