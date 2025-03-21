@@ -47,21 +47,19 @@
     <form id="reservationForm">
       <label for="name">Nome</label>
       <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+      
       <label for="company">Empresa</label>
       <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+      
       <label for="phone">Telefone</label>
-      <input 
-        type="tel" 
-        id="phone" 
-        name="phone" 
-        placeholder="Digite seu telefone" 
-        required 
-        pattern="[0-9]{9}" 
-        title="Por favor, insira exatamente 9 números">
+      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
+      
       <label for="email">E-mail (opcional)</label>
       <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
+      
       <label for="people">Nº de Pessoas</label>
       <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required min="1" max="20" style="width: 80px;">
+      
       <button type="button" onclick="submitForm()">Enviar</button>
     </form>
   </div>
@@ -71,8 +69,8 @@
 
   <script>
     const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";
-    let lastRequestTime = 0;
     const RATE_LIMIT_MS = 500;
+    let lastRequestTime = 0;
 
     async function handleResponse(response) {
       if (!response.ok) {
@@ -137,38 +135,32 @@
     async function submitForm() {
       const form = document.getElementById('reservationForm');
       const phone = form.phone.value.trim();
+      const email = form.email.value.trim();
       const people = parseInt(form.people.value.trim(), 10);
 
-      console.log("Iniciando validação...");
-      console.log("Número de pessoas:", people);
-
-      // Validação do telefone
       if (!/^[0-9]{9}$/.test(phone)) {
         alert("O número de telefone deve conter exatamente 9 dígitos.");
-        console.error("Falha na validação do telefone");
         return;
       }
 
-      // Validação do número de pessoas
+      if (email && !/\S+@\S+\.\S+/.test(email)) {
+        alert("Por favor, insira um e-mail válido.");
+        return;
+      }
+
       if (isNaN(people) || people < 1) {
         alert("Por favor, insira o número de pessoas (mínimo de 1).");
-        console.error("Falha na validação do número de pessoas");
         return;
       }
 
-      // Captura os quartos e datas selecionados
       const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-        .map(checkbox => {
-          const roomNumber = checkbox.getAttribute('data-room').replace('Quarto ', ''); // Remove "Quarto " do texto
-          const formattedDate = formatSimpleDate(checkbox.value);
-          return { date: formattedDate, room: roomNumber };
-        });
-
-      console.log("Quartos selecionados:", selectedDatesAndRooms);
+        .map(checkbox => ({
+          date: formatDate(checkbox.value),
+          room: checkbox.getAttribute('data-room')
+        }));
 
       if (selectedDatesAndRooms.length === 0) {
         alert("Por favor, selecione ao menos um quarto e uma data.");
-        console.error("Nenhum quarto foi selecionado");
         return;
       }
 
@@ -181,14 +173,11 @@
         "12": { max: 4 }
       };
 
-      // Soma da capacidade dos quartos selecionados
       let totalCapacity = 0;
 
       selectedDatesAndRooms.forEach(selection => {
-        const roomNumber = selection.room;
+        const roomNumber = selection.room.replace('Quarto ', '');
         const maxCapacity = roomCapacity[roomNumber]?.max;
-
-        console.log(`Validando Quarto ${roomNumber} com limite de ${maxCapacity} pessoas`);
 
         if (maxCapacity) {
           totalCapacity += maxCapacity;
@@ -197,36 +186,25 @@
         }
       });
 
-      console.log(`Capacidade total dos quartos selecionados: ${totalCapacity}`);
-
-      // Verifica se a capacidade total dos quartos selecionados é suficiente
       if (totalCapacity < people) {
-        alert(
-          `A capacidade total dos quartos selecionados (${totalCapacity} pessoas) não é suficiente para acomodar ${people} pessoas.\n` +
-          `Por favor, selecione quartos adicionais ou ajuste o número de pessoas.`
-        );
-        console.error("Capacidade insuficiente para o número de pessoas requisitado");
-        return; // Interrompe o envio
+        alert(`Capacidade total (${totalCapacity}) insuficiente para ${people} pessoas.`);
+        return;
       }
 
-      // Criação do objeto de envio
       const postData = {
         name: form.name.value.substring(0, 30),
         company: form.company.value.substring(0, 30),
-        phone: phone,
-        email: form.email.value.trim() || "Não informado",
-        people: people,
-        selectedDatesAndRooms
+        phone,
+        email: email || "Não informado",
+        people,
+        selectedDatesAndRooms,
+        reservationDates: selectedDatesAndRooms.map(entry => entry.date)
       };
-
-      console.log("Enviando dados:", postData);
 
       try {
         const response = await fetch(scriptUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(postData)
         });
 
@@ -241,15 +219,8 @@
         alert(`Erro ao enviar a reserva: ${error.message}`);
       }
     }
-
-    function formatSimpleDate(dateString) {
-      const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${day}-${month}-${year}`;
-    }
   </script>
 </body>
-</
+</html>
+
 
