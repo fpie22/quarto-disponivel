@@ -142,21 +142,24 @@
       console.log("Iniciando validação...");
       console.log("Número de pessoas:", people);
 
+      // Validação do telefone
       if (!/^[0-9]{9}$/.test(phone)) {
         alert("O número de telefone deve conter exatamente 9 dígitos.");
         console.error("Falha na validação do telefone");
         return;
       }
 
+      // Validação do número de pessoas
       if (isNaN(people) || people < 1) {
         alert("Por favor, insira o número de pessoas (mínimo de 1).");
         console.error("Falha na validação do número de pessoas");
         return;
       }
 
+      // Captura os quartos e datas selecionados
       const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
         .map(checkbox => {
-          const roomNumber = checkbox.getAttribute('data-room').replace('Quarto ', '');
+          const roomNumber = checkbox.getAttribute('data-room').replace('Quarto ', ''); // Remove "Quarto " do texto
           const formattedDate = formatSimpleDate(checkbox.value);
           return { date: formattedDate, room: roomNumber };
         });
@@ -178,7 +181,8 @@
         "12": { max: 4 }
       };
 
-      let capacityIssues = [];
+      // Soma da capacidade dos quartos selecionados
+      let totalCapacity = 0;
 
       selectedDatesAndRooms.forEach(selection => {
         const roomNumber = selection.room;
@@ -186,18 +190,26 @@
 
         console.log(`Validando Quarto ${roomNumber} com limite de ${maxCapacity} pessoas`);
 
-        if (maxCapacity && people > maxCapacity) {
-          capacityIssues.push(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas. Junte outro quarto`);
-          console.warn(`Capacidade excedida no Quarto ${roomNumber}`);
+        if (maxCapacity) {
+          totalCapacity += maxCapacity;
+        } else {
+          console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
         }
       });
 
-      if (capacityIssues.length > 0) {
-        alert(capacityIssues.join("\n"));
-        console.error("Problemas de capacidade detectados:", capacityIssues);
-        return;
+      console.log(`Capacidade total dos quartos selecionados: ${totalCapacity}`);
+
+      // Verifica se a capacidade total dos quartos selecionados é suficiente
+      if (totalCapacity < people) {
+        alert(
+          `A capacidade total dos quartos selecionados (${totalCapacity} pessoas) não é suficiente para acomodar ${people} pessoas.\n` +
+          `Por favor, selecione quartos adicionais ou ajuste o número de pessoas.`
+        );
+        console.error("Capacidade insuficiente para o número de pessoas requisitado");
+        return; // Interrompe o envio
       }
 
+      // Criação do objeto de envio
       const postData = {
         name: form.name.value.substring(0, 30),
         company: form.company.value.substring(0, 30),
@@ -239,5 +251,5 @@
     }
   </script>
 </body>
-</html>
+</
 
