@@ -87,16 +87,12 @@
       return `${day}-${month}-${year}`;
     }
 
-    function getTodayDate() {
-      const today = new Date();
-      const day = String(today.getDate()).padStart(2, '0');
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const year = today.getFullYear();
+    function getCurrentDate() {
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
       return `${day}-${month}-${year}`;
-    }
-
-    function formatRoomName(roomName) {
-      return roomName.replace("Quarto ", "Q"); // Converte "Quarto 8" para "Q8"
     }
 
     async function loadAvailability() {
@@ -109,7 +105,6 @@
 
       try {
         const data = await handleResponse(await fetch(scriptUrl));
-
         const availabilityDiv = document.getElementById("availability");
         availabilityDiv.innerHTML = "";
 
@@ -122,14 +117,13 @@
 
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
-          const formattedRoomName = formatRoomName(room.name); // Formata o nome do quarto
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${formattedRoomName}</td>
-            <td>${getTodayDate()}</td> <!-- Adiciona a data atual da reserva -->
+            <td>${room.name}</td>
+            <td>${getCurrentDate()}</td> <!-- Data atual da reserva -->
             ${room.availability.map((status, index) => `
               <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
-                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
+                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${room.name}" value="${data.dates[index]}" />` : "Ocupado"}
               </td>
             `).join("")}
           `;
@@ -186,7 +180,7 @@
         people,
         selectedDatesAndRooms,
         reservationDates: selectedDatesAndRooms.map(entry => entry.date),
-        reservationDate: getTodayDate() // Data atual da reserva incluída no envio
+        reservationDate: getCurrentDate() // Inclui a data da reserva no envio
       };
 
       try {
