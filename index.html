@@ -139,15 +139,20 @@
       const phone = form.phone.value.trim();
       const people = parseInt(form.people.value.trim(), 10);
 
+      console.log("Iniciando validação...");
+      console.log("Número de pessoas:", people);
+
       // Validação do telefone
       if (!/^[0-9]{9}$/.test(phone)) {
         alert("O número de telefone deve conter exatamente 9 dígitos.");
+        console.error("Falha na validação do telefone");
         return;
       }
 
       // Validação do número de pessoas
       if (isNaN(people) || people < 1) {
         alert("Por favor, insira o número de pessoas (mínimo de 1).");
+        console.error("Falha na validação do número de pessoas");
         return;
       }
 
@@ -159,8 +164,11 @@
           return { date: formattedDate, room: roomNumber };
         });
 
+      console.log("Quartos selecionados:", selectedDatesAndRooms);
+
       if (selectedDatesAndRooms.length === 0) {
         alert("Por favor, selecione ao menos um quarto e uma data.");
+        console.error("Nenhum quarto foi selecionado");
         return;
       }
 
@@ -173,17 +181,24 @@
         "12": { max: 4 }
       };
 
-      let capacityIssue = false;
+      let capacityIssues = [];
+
+      // Verifica as restrições de capacidade dos quartos
       selectedDatesAndRooms.forEach(selection => {
         const roomNumber = selection.room;
         const maxCapacity = roomCapacity[roomNumber]?.max;
+
+        console.log(`Validando Quarto ${roomNumber} com limite de ${maxCapacity} pessoas`);
+
         if (maxCapacity && people > maxCapacity) {
-          alert(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas. Por favor, ajuste o número de pessoas ou escolha outro quarto.`);
-          capacityIssue = true;
+          capacityIssues.push(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas.`);
+          console.warn(`Capacidade excedida no Quarto ${roomNumber}`);
         }
       });
 
-      if (capacityIssue) {
+      if (capacityIssues.length > 0) {
+        alert(capacityIssues.join("\n"));
+        console.error("Problemas de capacidade detectados:", capacityIssues);
         return;
       }
 
