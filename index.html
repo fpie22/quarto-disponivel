@@ -52,13 +52,13 @@
       <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
       
       <label for="phone">Telefone</label>
-      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
+      <input type="tel" id="phone" name="phone" placeholder="Digite telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
       
       <label for="email">E-mail (opcional)</label>
       <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
       
       <label for="people">Nº de Pessoas</label>
-      <input type="number" id="people" name="people" placeholder="Digite o número de pessoas" required min="1" max="20" style="width: 80px;">
+      <input type="number" id="people" name="people" placeholder="Digite o nº de pessoas" required min="1" max="20" style="width: 60px;">
       
       <button type="button" onclick="submitForm()">Enviar</button>
     </form>
@@ -73,6 +73,10 @@
     let lastRequestTime = 0;
 
     const roomCapacity = {
+      "Q1": { max: 5 },
+      "Q2": { max: 2 },
+      "Q4": { max: 2 },
+      "Q7": { max: 3 },
       "Q8": { max: 2 },
       "Q9": { max: 2 },
       "Q11": { max: 2 },
@@ -226,4 +230,3 @@
   </script>
 </body>
 </html>
-
