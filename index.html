@@ -177,11 +177,18 @@
       let capacityIssue = false;
 
       // Verifica as restrições de capacidade dos quartos
+      const roomPeopleCount = {}; // Controle de pessoas por quarto
       selectedDatesAndRooms.forEach(selection => {
         const roomNumber = selection.room;
-        const maxCapacity = roomCapacity[roomNumber]?.max; // Capacidade máxima do quarto
-        if (maxCapacity && people > maxCapacity) {
-          alert(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas. Por favor, escolha outro quarto ou ajuste o número de pessoas.`);
+        const maxCapacity = roomCapacity[roomNumber]?.max;
+
+        if (!roomPeopleCount[roomNumber]) {
+          roomPeopleCount[roomNumber] = 0;
+        }
+        roomPeopleCount[roomNumber] += people;
+
+        if (maxCapacity && roomPeopleCount[roomNumber] > maxCapacity) {
+          alert(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas. Por favor, ajuste o número de pessoas ou escolha outro quarto.`);
           capacityIssue = true;
         }
       });
