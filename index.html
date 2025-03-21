@@ -187,7 +187,7 @@
         console.log(`Validando Quarto ${roomNumber} com limite de ${maxCapacity} pessoas`);
 
         if (maxCapacity && people > maxCapacity) {
-          capacityIssues.push(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas.`);
+          capacityIssues.push(`O Quarto ${roomNumber} não pode acomodar mais de ${maxCapacity} pessoas. Junte outro quarto`);
           console.warn(`Capacidade excedida no Quarto ${roomNumber}`);
         }
       });
@@ -240,5 +240,4 @@
   </script>
 </body>
 </html>
-
 
