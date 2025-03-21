@@ -169,14 +169,15 @@
         return; // Interrompe o envio do formulário
       }
 
-      const postData = {
-        name: form.name.value.substring(0, 30),
-        company: form.company.value.substring(0, 30),
-        phone: phone, // O número já foi validado
-        email: email, // Campo opcional
-        people: parseInt(form.people.value),
-        selectedDatesAndRooms // Envia a lista de quartos e datas formatadas
-      };
+    const postData = {
+      name: form.name.value.substring(0, 30),
+      company: form.company.value.substring(0, 30),
+      phone: phone, // Telefone validado
+      email: email, // E-mail opcional
+      people: form.people.value && !isNaN(form.people.value) ? parseInt(form.people.value, 10) : 0, // Garante um número válido, ou 0 se vazio/inválido
+      selectedDatesAndRooms // Lista de quartos e datas
+    };
+
 
       console.log("Enviando dados:", postData);
 
