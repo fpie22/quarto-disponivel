@@ -1,19 +1,17 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva de Quartos</title>
   <style>
-  <body>
-    <img src="https://raw.githubusercontent.com/fpie22/quarto-disponivel/main/portelaquartos.JPG" alt="Logo Portela Quartos" class="logo">
-    <h2>Reserva de Quartos</h2>
+    body {
       font-family: 'Poppins', sans-serif;
       background-image: url('https://raw.githubusercontent.com/fpie22/quarto-disponivel/main/fotositefunfo.JPG');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-attachment: fixed; /* Garante que a imagem cubra todo o site e fique fixa */
+      background-attachment: fixed; /* Fundo fixo */
       color: black;
       margin: 0;
       padding: 0;
@@ -44,7 +42,7 @@
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
-      background-color: #f0f0f0; /* Fundo cinza claro */
+      background-color: #f0f0f0;
     }
 
     table {
@@ -68,7 +66,6 @@
       color: white;
     }
 
-    /* Nomes dos quartos em negrito */
     td:first-child {
       font-weight: bold;
     }
@@ -77,13 +74,12 @@
       background-color: #28a745;
     }
 
-  .occupied {
-   background-color: #dc3545; /* Vermelho destacado */
-   font-size: 0.8em; /* Diminui o tamanho da fonte */
-   text-align: center; /* Garante que o texto esteja centralizado */
-    padding: 4px; /* Reduz o espaçamento interno */
-}
-
+    .occupied {
+      background-color: #dc3545;
+      font-size: 0.8em;
+      text-align: center;
+      padding: 4px;
+    }
 
     button {
       font-weight: bold;
@@ -101,39 +97,37 @@
       background-color: #0056b3;
     }
 
-.form-container {
-  background-color: rgba(255, 255, 255, 0.5); /* Fundo transparente */
-  padding: 10px; /* Reduz o espaçamento interno */
-  border-radius: 10px;
-  margin: 10px auto; /* Reduz margens */
-  max-width: 550px; /* Um pouco mais estreito */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-input[type="text"], input[type="tel"], input[type="email"], input[type="number"] {
-  padding: 5px; /* Reduz a altura dos campos */
-  margin: 5px 0; /* Reduz espaçamento entre os campos */
-  font-size: 0.9em; /* Reduz o tamanho da fonte */
-}
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px auto;
+      max-width: 550px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
     .logo {
       position: absolute;
       top: 10px;
       left: 10px;
-      width: 100px;
+      width: 150px; /* Aumente o tamanho do logo */
       height: auto;
       z-index: 1000;
       background-color: rgba(255, 255, 255, 0.5); /* Fundo semi-transparente */
-      border-radius: 5px; /* Bordas arredondadas */
-      padding: 5px; /* Espaçamento ao redor do logo */
+      border-radius: 5px;
+      padding: 5px;
     }
-
-</style>
+  </style>
 </head>
-
 <body>
   <img src="https://raw.githubusercontent.com/fpie22/quarto-disponivel/main/portelaquartos.JPG" alt="Logo Portela Quartos" class="logo">
   <h2>Reserva de Quartos</h2>
+  <div class="form-container">
+    <!-- Seu formulário -->
+  </div>
+  <!-- Outros conteúdos do seu site -->
+</body>
+</html>
 
 
 <div class="form-container">
@@ -335,6 +329,9 @@ input[type="text"], input[type="tel"], input[type="email"], input[type="number"]
   </script>
 </body>
 </html>
+
+
+
 
 
 
