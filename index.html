@@ -111,28 +111,37 @@
       overflow-y: auto; /* Adiciona rolagem vertical */
     }
 
-    /* Caixa do formulário */
-    .form-container {
-      background-color: rgba(255, 255, 255, 0.5); /* Fundo semi-transparente */
-      padding: 5px; /* Reduz o espaçamento interno */
-      border-radius: 10px;
-      margin: 10px auto;
-      max-width: 450px; /* Reduz a largura da caixa */
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
+   /* Caixa do formulário */
+.form-container {
+  background-color: rgba(255, 255, 255, 0.5); /* Fundo semi-transparente */
+  padding: 5px; /* Reduz o espaçamento interno */
+  border-radius: 10px;
+  margin: 10px auto;
+  max-width: 450px; /* Reduz a largura da caixa */
+  max-height: 30vh; /* Limita a altura total para liberar espaço */
+  overflow-y: auto; /* Permite rolagem interna, se necessário */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombreamento */
+}
 
-    /* Estilo do logotipo */
-    .logo {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 200px; /* Aumenta o tamanho do logotipo */
-      height: auto;
-      z-index: 1000;
-      background-color: rgba(0, 0, 0, 0.5); /* Fundo preto semi-transparente */
-      border-radius: 5px; /* Bordas arredondadas */
-      padding: 5px; /* Espaçamento ao redor do logo */
-    }
+/* Estilo do logotipo */
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 200px; /* Aumenta o tamanho do logotipo */
+  height: auto;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo preto semi-transparente */
+  border-radius: 5px; /* Bordas arredondadas */
+  padding: 5px; /* Espaçamento ao redor do logo */
+}
+
+/* Disponibilidade com rolagem */
+#availability {
+  max-height: 60vh; /* Ajusta a altura para caber na tela */
+  overflow-y: auto; /* Adiciona rolagem se necessário */
+}
+
   </style>
 </head>
 <body>
@@ -174,39 +183,33 @@
 <div class="form-container">
   <h3>Informações do Cliente</h3>
   <form id="reservationForm">
-    <div style="display: flex; gap: 5px;">
-      <div style="flex: 1;">
+    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 150px;">
         <label for="name">Nome</label>
         <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
       </div>
-      <div style="flex: 1;">
+      <div style="flex: 1; min-width: 150px;">
         <label for="company">Empresa</label>
         <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
       </div>
-    </div>
-    
-    <div style="display: flex; gap: 5px;">
-      <div style="flex: 1;">
+      <div style="flex: 1; min-width: 150px;">
         <label for="phone">Telefone</label>
         <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
       </div>
-      <div style="flex: 1;">
+      <div style="flex: 1; min-width: 150px;">
         <label for="email">E-mail</label>
         <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
       </div>
-      <div style="flex: 0.5;">
+      <div style="flex: 1; min-width: 100px;">
         <label for="people">Nº Pessoas</label>
         <input type="number" id="people" name="people" placeholder="Nº" required min="1" max="20">
       </div>
     </div>
-    
     <button type="button" onclick="submitForm()">Enviar</button>
   </form>
 </div>
-
-
-  <h3>Disponibilidade de Quartos</h3>
-  <div id="availability"></div>
+<h3>Disponibilidade de Quartos</h3>
+<div id="availability"></div>
 
 
   <script>
@@ -370,6 +373,9 @@
   </script>
 </body>
 </html>
+
+
+
 
 
 
