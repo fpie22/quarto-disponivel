@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -93,6 +93,11 @@
       margin: 20px auto;
     }
 
+        #availability {
+      max-height: 80vh; /* Limita a altura para caber na tela */
+      overflow-y: auto; /* Adiciona rolagem se necessário */
+    }
+
     button:hover {
       background-color: #0056b3;
     }
@@ -106,17 +111,14 @@
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-  .logo {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 200px; /* Aumenta o tamanho do logotipo */
-    height: auto;
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente preto */
-    border-radius: 5px; /* Mantém bordas arredondadas */
-    padding: 10px; /* Espaçamento maior ao redor do logo */
-  }
+.logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 150px; /* Ajuste do tamanho */
+  height: auto;
+}
+
 
   </style>
 </head>
@@ -330,3 +332,5 @@
   </script>
 </body>
 </html>
+
+
