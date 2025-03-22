@@ -105,7 +105,8 @@
 <body>
   <h2>Reserva de Quartos</h2>
 
- <div class="form-container">
+
+<div class="form-container">
   <h3>Informações do Cliente</h3>
   <form id="reservationForm">
     <div style="display: flex; gap: 10px;">
@@ -137,9 +138,9 @@
   </form>
 </div>
 
+<h3>Disponibilidade de Quartos</h3>
+<div id="availability"></div>
 
-  <h3>Disponibilidade de Quartos</h3>
-  <div id="availability"></div>
   <script>
     const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";
     const RATE_LIMIT_MS = 500;
@@ -301,3 +302,5 @@
   </script>
 </body>
 </html>
+
+
