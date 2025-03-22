@@ -179,37 +179,48 @@
 </body>
 </html>
 
+ <!-- Formulário (mantendo apenas um) -->
+  <div class="form-container">
+    <h3>Informações do Cliente</h3>
+    <form id="reservationForm">
+      <!-- Linha 1: Nome e Empresa -->
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+          <label for="name">Nome</label>
+          <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+        </div>
+        <div style="flex: 1;">
+          <label for="company">Empresa</label>
+          <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+        </div>
+      </div>
+      
+      <!-- Linha 2: Telefone e E-mail -->
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+          <label for="phone">Telefone</label>
+          <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
+        </div>
+        <div style="flex: 1;">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
+        </div>
+      </div>
+      
+      <!-- Botão Enviar -->
+      <div style="text-align: center; margin-top: 10px;">
+        <button type="button" onclick="submitForm()">Enviar</button>
+      </div>
+    </form>
+  </div>
 
-<div class="form-container">
-  <h3>Informações do Cliente</h3>
-  <form id="reservationForm">
-    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-      <div style="flex: 1; min-width: 150px;">
-        <label for="name">Nome</label>
-        <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
-      </div>
-      <div style="flex: 1; min-width: 150px;">
-        <label for="company">Empresa</label>
-        <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
-      </div>
-      <div style="flex: 1; min-width: 150px;">
-        <label for="phone">Telefone</label>
-        <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
-      </div>
-      <div style="flex: 1; min-width: 150px;">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
-      </div>
-      <div style="flex: 1; min-width: 100px;">
-        <label for="people">Nº Pessoas</label>
-        <input type="number" id="people" name="people" placeholder="Nº" required min="1" max="20">
-      </div>
-    </div>
-    <button type="button" onclick="submitForm()">Enviar</button>
-  </form>
-</div>
-<h3>Disponibilidade de Quartos</h3>
-<div id="availability"></div>
+  <!-- Disponibilidade -->
+  <h3>Disponibilidade de Quartos</h3>
+  <div id="availability">
+    <!-- Tabela será carregada aqui -->
+  </div>
+</body>
+</html>
 
 
   <script>
@@ -373,6 +384,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
