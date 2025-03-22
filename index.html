@@ -5,92 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva de Quartos</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-image: url('https://raw.githubusercontent.com/fpie22/quarto-disponivel/main/fotositefunfo.JPG');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: black;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url('https://raw.githubusercontent.com/fpie22/quarto-disponivel/main/fotositefunfo.JPG');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: black;
+    margin: 0;
+    padding: 0;
+  }
 
-    h2 {
-      text-align: center;
-      color: white;
-      font-size: 2.5em;
-      margin-top: 20px;
-    }
+  h2 {
+    text-align: center;
+    color: white;
+    font-size: 2.5em;
+    margin-top: 20px;
+  }
 
-    h3 {
-      text-align: center;
-      color: #007BFF;
-      margin-bottom: 15px;
-    }
+  h3 {
+    text-align: center;
+    color: #007BFF;
+    margin-bottom: 15px;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
+  /* Negrito para os campos de cliente */
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
 
-    th {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-      background-color: #007BFF;
-      color: white;
-    }
+  input[type="text"], input[type="tel"], input[type="email"], input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0; /* Fundo cinza claro */
+  }
 
-    td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-      color: white;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
 
-    .available {
-      background-color: #28a745;
-    }
+  th {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    background-color: #007BFF;
+    color: white; /* Branco para destaque */
+  }
 
-    .occupied {
-      background-color: #dc3545;
-    }
+  td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    color: white; /* Branco para visibilidade */
+  }
 
-    button {
-      font-weight: bold;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: block;
-      margin: 20px auto;
-    }
+  .available {
+    background-color: #28a745; /* Verde destacado */
+  }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+  .occupied {
+    background-color: #dc3545; /* Vermelho destacado */
+  }
 
-    .form-container {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px auto;
-      max-width: 600px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
+  button {
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+  }
 
-    input[type="text"], input[type="tel"], input[type="email"], input[type="number"] {
-      width: calc(100% - 20px);
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-  </style>
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  .form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
 </head>
 <body>
   <h2>Reserva de Quartos</h2>
