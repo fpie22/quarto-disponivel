@@ -290,16 +290,22 @@
     const today = new Date();
     const reservationDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
 
-    // Adiciona a data formatada ao postData
-      const postData = {
-        name: form.name.value.trim(),
-        company: form.company.value.trim(),
-        phone,
-        email: email || "Não informado",
-        people,
-        selectedDatesAndRooms,
-        reservationDate // Data formatada no formato dd-MM-yyyy
-    };
+    // Declare o email uma única vez
+const email = form.email.value.trim() || "Não informado"; // Trata e insere "Não informado" se estiver vazio
+
+// Use o email diretamente onde for necessário, sem redeclará-lo
+const postData = {
+  name: form.name.value.trim(),
+  company: form.company.value.trim(),
+  phone: form.phone.value.trim(),
+  email, // Já está declarado
+  people: parseInt(form.people.value.trim(), 10),
+  selectedDatesAndRooms,
+  reservationDate: formatDate(new Date()) // Data formatada como dd-MM-yyyy
+};
+
+  
+
 
 
       try {
@@ -427,6 +433,11 @@
       return;
     }
 
+    if (people > 99) {
+      alert("O número de pessoas deve ter no máximo dois dígitos.");
+      return;
+    }
+    
     const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
       .map(checkbox => ({
         date: checkbox.value,
@@ -491,3 +502,4 @@
   }
 </script>
 
+<
