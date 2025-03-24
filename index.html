@@ -331,6 +331,10 @@
         return;
       }
 
+      const today = new Date();
+      const registrationDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd-MM-yyyy");
+
+
       const postData = {
         name: form.name.value,
         company: form.company.value,
