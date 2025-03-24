@@ -283,6 +283,22 @@
       }
 
       const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+      .map(checkbox => {
+         const date = checkbox.value;
+        const room = checkbox.getAttribute('data-room');
+
+        console.log(`Checkbox encontrado - valor: ${date}, data-room: ${room}`);
+
+        if (!date || !room) {
+        console.warn(`Checkbox inválido detectado: valor -> ${date}, data-room -> ${room}`);
+        return null;
+        }
+
+        return { date: formatDate(date), room };
+      })
+  .   filter(item => item !== null);
+
+const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
         .map(checkbox => ({
           date: formatDate(checkbox.value),
           room: checkbox.getAttribute('data-room')
@@ -345,4 +361,5 @@
   </script>
 </body>
 </html>
+
 
