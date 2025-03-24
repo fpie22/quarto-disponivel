@@ -193,12 +193,6 @@
 </div>
 
 
-    <!-- Botão "Enviar" -->
-    <button type="button" onclick="submitForm()">Enviar</button>
-  </form>
-</div>
-
-
   <h3>Disponibilidade de Quartos</h3>
   <div id="availability"></div>
 </body>
@@ -292,14 +286,21 @@
         return;
       }
 
+    // Gera a data no formato dd-MM-yyyy antes de enviar
+    const today = new Date();
+    const reservationDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+
+    // Adiciona a data formatada ao postData
       const postData = {
-        name: form.name.value,
-        company: form.company.value,
-        phone: form.phone.value,
-        email: form.email.value || "Não informado",
+        name: form.name.value.trim(),
+        company: form.company.value.trim(),
+        phone,
+        email: email || "Não informado",
+        people,
         selectedDatesAndRooms,
-        reservationDate: new Date().toISOString()
-      };
+        reservationDate // Data formatada no formato dd-MM-yyyy
+    };
+
 
       try {
         const response = await fetch(scriptUrl, {
@@ -322,7 +323,6 @@
   </script>
 </body>
 </html>
-
 
 
 <script>
@@ -369,7 +369,8 @@
 
     try {
       const data = await handleResponse(await fetch(scriptUrl));
-      console.log("Dados recebidos:", data); // Verifique os dados recebidos no console
+      console.log("Dados recebidos:", data);
+
       const availabilityDiv = document.getElementById("availability");
       availabilityDiv.innerHTML = "";
 
@@ -409,18 +410,7 @@
     const form = document.getElementById('reservationForm');
     const phone = form.phone.value.trim();
     const email = form.email.value.trim();
-    const people = data.people && !isNaN(data.people) ? parseInt(data.people, 10) : "Não especificado";
-
-  sheet.appendRow([
-    name,              // Coluna 1: Nome
-    company,           // Coluna 2: Empresa
-    phone,             // Coluna 3: Telefone
-    email,             // Coluna 4: E-mail
-    people,            // Coluna 5: Nº de Pessoas
-    formattedDate,     // Coluna 6: Data da reserva formatada
-    item.room          // Coluna 7: Quarto reservado
-  ]);
-
+    const people = parseInt(form.people.value.trim(), 10);
 
     if (!/^[0-9]{9}$/.test(phone)) {
       alert("O número de telefone deve conter exatamente 9 dígitos.");
@@ -470,16 +460,16 @@
       return;
     }
 
+    const reservationDate = formatDate(new Date()); // Formata a data aqui como dd-MM-yyyy
     const postData = {
       name: form.name.value.trim(),
       company: form.company.value.trim(),
       phone,
       email: email || "Não informado",
-      people, // Campo Nº de Pessoas
+      people,
       selectedDatesAndRooms,
-      reservationDate: new Date().toISOString()
-      };
-
+      reservationDate
+    };
 
     try {
       const response = await fetch(scriptUrl, {
