@@ -172,20 +172,26 @@
       </div>
     </div>
 
-    <!-- Terceira linha: Nº de Pessoas -->
-    <div>
-      <div style="flex: 1;">
+    <!-- Terceira linha: Nº de Pessoas e Botão -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+      <div style="flex: 0 0 auto;">
         <label for="people">Nº de Pessoas</label>
         <input
           type="number"
           id="people"
           name="people"
-          placeholder="Digite o número de pessoas"
+          placeholder="00"
           required
           min="1"
+          max="99"
+          style="width: 60px; text-align: center;" <!-- Campo ajustado para 2 dígitos -->
         >
       </div>
+      <button type="button" onclick="submitForm()">Enviar</button>
     </div>
+  </form>
+</div>
+
 
     <!-- Botão "Enviar" -->
     <button type="button" onclick="submitForm()">Enviar</button>
@@ -494,6 +500,4 @@
     }
   }
 </script>
-
-
 
