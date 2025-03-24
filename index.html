@@ -12,14 +12,13 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-attachment: fixed; /* Fundo fixo */
+      background-attachment: fixed;
       color: black;
       margin: 0;
       padding: 0;
-      overflow-x: hidden; /* Remove possíveis barras de rolagem horizontais */
+      overflow-x: hidden;
     }
 
-    /* Título principal */
     h2 {
       text-align: center;
       color: white;
@@ -27,14 +26,12 @@
       margin-top: 20px;
     }
 
-    /* Subtítulos */
     h3 {
       text-align: center;
       color: #38334d;
       margin-bottom: 15px;
     }
 
-    /* Campos de formulário */
     label {
       font-weight: bold;
       display: block;
@@ -43,15 +40,14 @@
 
     input[type="text"], input[type="tel"], input[type="email"], input[type="number"] {
       width: calc(100% - 20px);
-      padding: 5px; /* Reduz altura do campo */
-      margin: 5px 0; /* Espaçamento reduzido */
+      padding: 5px;
+      margin: 5px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
       background-color: #f0f0f0;
-      font-size: 0.9em; /* Texto menor */
+      font-size: 0.9em;
     }
 
-    /* Tabela de quartos */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -83,12 +79,10 @@
 
     .occupied {
       background-color: #dc3545;
-      font-size: 0.8em;
       text-align: center;
       padding: 4px;
     }
 
-    /* Botão */
     button {
       font-weight: bold;
       padding: 10px 20px;
@@ -105,101 +99,63 @@
       background-color: #0056b3;
     }
 
-    /* Disponibilidade com rolagem */
     #availability {
-      max-height: 60vh; /* Ajusta a altura máxima para caber na tela */
-      overflow-y: auto; /* Adiciona rolagem vertical */
+      max-height: 60vh;
+      overflow-y: auto;
     }
 
-    /* Caixa do formulário */
     .form-container {
-      background-color: rgba(255, 255, 255, 0.5); /* Fundo semi-transparente */
-      padding: 5px; /* Reduz o espaçamento interno */
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 10px;
       border-radius: 10px;
       margin: 10px auto;
-      max-width: 450px; /* Reduz a largura da caixa */
-      max-height: 30vh; /* Limita a altura total para liberar espaço */
-      overflow-y: auto; /* Permite rolagem interna, se necessário */
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombreamento */
+      max-width: 450px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    /* Estilo do logotipo */
     .logo {
       position: absolute;
       top: 10px;
       left: 10px;
-      width: 200px; /* Aumenta o tamanho do logotipo */
-      height: auto;
+      width: 200px;
       z-index: 1000;
-      background-color: rgba(0, 0, 0, 0.5); /* Fundo preto semi-transparente */
-      border-radius: 5px; /* Bordas arredondadas */
-      padding: 5px; /* Espaçamento ao redor do logo */
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 5px;
+      padding: 5px;
     }
-
   </style>
 </head>
 <body>
-  <!-- Logotipo -->
   <img src="https://raw.githubusercontent.com/fpie22/quarto-disponivel/main/portelaquartos.JPG" alt="Logo Portela Quartos" class="logo">
-  
-  <!-- Título -->
+
   <h2>Reserva de Quartos</h2>
   
-  <!-- Formulário -->
   <div class="form-container">
     <h3>Informações do Cliente</h3>
     <form id="reservationForm">
-      <div style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
-          <label for="name">Nome</label>
-          <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
-        </div>
-        <div style="flex: 1;">
-          <label for="company">Empresa</label>
-          <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
-        </div>
-      </div>
+      <label for="name">Nome</label>
+      <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
       
-      <div style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
-          <label for="phone">Telefone</label>
-          <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
-        </div>
-        <div style="flex: 1;">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
-        </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 10px;">
-        <button type="button" onclick="submitForm()">Enviar</button>
-      </div>
+      <label for="company">Empresa</label>
+      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+      
+      <label for="phone">Telefone</label>
+      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
+      
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
+      
+      <button type="button" onclick="submitForm()">Enviar</button>
     </form>
   </div>
 
-  <!-- Disponibilidade -->
   <h3>Disponibilidade de Quartos</h3>
-  <div id="availability">
-    <!-- Tabela será carregada aqui -->
-  </div>
+  <div id="availability"></div>
 
   <script>
     const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";
     const RATE_LIMIT_MS = 500;
     let lastRequestTime = 0;
-
-    const roomCapacity = {
-      "Q1": { max: 5 },
-      "Q2": { max: 2 },
-      "Q4": { max: 2 },
-      "Q5": { max: 4 },
-      "Q7": { max: 3 },
-      "Q8": { max: 2 },
-      "Q9": { max: 2 },
-      "Q10": { max: 6 },
-      "Q11": { max: 2 },
-      "Q12": { max: 4 }
-    };
 
     async function handleResponse(response) {
       if (!response.ok) {
@@ -217,6 +173,7 @@
     }
 
     async function loadAvailability() {
+      console.log("Carregando disponibilidade...");
       const now = Date.now();
       if (now - lastRequestTime < RATE_LIMIT_MS) {
         console.warn("Aguarde antes de realizar outra requisição.");
@@ -239,12 +196,11 @@
         const tbody = document.createElement("tbody");
         data.rooms.forEach(room => {
           const row = document.createElement("tr");
-          const formattedRoomName = room.name.replace("Quarto ", "Q");
           row.innerHTML = `
-            <td>${formattedRoomName}</td>
+            <td>${room.name}</td>
             ${room.availability.map((status, index) => `
               <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
-                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
+                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${room.name}" value="${data.dates[index]}" />` : "Ocupado"}
               </td>
             `).join("")}
           `;
@@ -254,95 +210,32 @@
 
         availabilityDiv.appendChild(table);
       } catch (error) {
-        console.error("Erro ao carregar as datas disponíveis:", error);
-        document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
+        console.error("Erro ao carregar a disponibilidade:", error);
+        document.getElementById("availability").innerText = `Erro ao carregar a disponibilidade: ${error.message}`;
       }
     }
 
     document.addEventListener("DOMContentLoaded", loadAvailability);
 
     async function submitForm() {
+      console.log("Enviando formulário...");
       const form = document.getElementById('reservationForm');
-      const phone = form.phone.value.trim();
-      const email = form.email.value.trim();
-      const people = parseInt(form.people.value.trim(), 10);
-
-      if (!/^[0-9]{9}$/.test(phone)) {
-        alert("O número de telefone deve conter exatamente 9 dígitos.");
-        return;
-      }
-
-      if (email && !/\S+@\S+\.\S+/.test(email)) {
-        alert("Por favor, insira um e-mail válido.");
-        return;
-      }
-
-      if (isNaN(people) || people < 1) {
-        alert("Por favor, insira o número de pessoas (mínimo de 1).");
-        return;
-      }
-
-      // Declarar apenas uma vez no início da função submitForm
-  let selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-  .map(checkbox => {
-    const date = checkbox.value;
-    const room = checkbox.getAttribute('data-room');
-
-    console.log(`Checkbox encontrado - valor: ${date}, data-room: ${room}`);
-
-    if (!date || !room) {
-      console.warn(`Checkbox inválido detectado: valor -> ${date}, data-room -> ${room}`);
-      return null;
-    }
-
-    return { date: formatDate(date), room };
-  })
-  .filter(item => item !== null);
-
-// Verificar se há quartos e datas selecionados
-  if (selectedDatesAndRooms.length === 0) {
-  alert("Por favor, selecione ao menos um quarto e uma data.");
-  return; // Sai da função se não houver seleção válida
-}
-
-// Cálculo da capacidade total
-let totalCapacity = 0;
-
-selectedDatesAndRooms.forEach(selection => {
-  const roomNumber = selection.room;
-  const maxCapacity = roomCapacity[roomNumber]?.max;
-
-  if (maxCapacity) {
-    totalCapacity += maxCapacity;
-  } else {
-    console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
-  }
-});
-
-console.log(`Capacidade total calculada: ${totalCapacity}`);
-
-
-        if (maxCapacity) {
-          totalCapacity += maxCapacity;
-        } else {
-          console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
-        }
-      });
-
-      if (totalCapacity < people) {
-        alert(
-          `A capacidade total (${totalCapacity} pessoas) dos quartos selecionados não é suficiente para acomodar ${people} pessoas.\n` +
-          `Por favor, selecione quartos adicionais ou ajuste o número de pessoas.`
-        );
+      const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+        .map(checkbox => ({
+          date: checkbox.value,
+          room: checkbox.getAttribute('data-room')
+        }));
+      
+      if (selectedDatesAndRooms.length === 0) {
+        alert("Por favor, selecione pelo menos um quarto e uma data.");
         return;
       }
 
       const postData = {
         name: form.name.value,
         company: form.company.value,
-        phone,
-        email: email || "Não informado",
-        people,
+        phone: form.phone.value,
+        email: form.email.value || "Não informado",
         selectedDatesAndRooms,
         reservationDate: new Date().toISOString()
       };
@@ -368,3 +261,169 @@ console.log(`Capacidade total calculada: ${totalCapacity}`);
   </script>
 </body>
 </html>
+
+
+
+<script>
+  const scriptUrl = "https://wild-base-f885.nando-piedade.workers.dev";
+  const RATE_LIMIT_MS = 500;
+  let lastRequestTime = 0;
+
+  const roomCapacity = {
+    "Q1": { max: 5 },
+    "Q2": { max: 2 },
+    "Q4": { max: 2 },
+    "Q5": { max: 4 },
+    "Q7": { max: 3 },
+    "Q8": { max: 2 },
+    "Q9": { max: 2 },
+    "Q10": { max: 6 },
+    "Q11": { max: 2 },
+    "Q12": { max: 4 }
+  };
+
+  async function handleResponse(response) {
+    if (!response.ok) {
+      throw new Error(`Erro HTTP! Status: ${response.status}`);
+    }
+    return await response.json();
+  }
+
+  function formatDate(isoDate) {
+    const date = new Date(isoDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
+  async function loadAvailability() {
+    console.log("Carregando disponibilidade...");
+    const now = Date.now();
+    if (now - lastRequestTime < RATE_LIMIT_MS) {
+      console.warn("Aguarde antes de realizar outra requisição.");
+      return;
+    }
+    lastRequestTime = now;
+
+    try {
+      const data = await handleResponse(await fetch(scriptUrl));
+      console.log("Dados recebidos:", data); // Verifique os dados recebidos no console
+      const availabilityDiv = document.getElementById("availability");
+      availabilityDiv.innerHTML = "";
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      data.rooms.forEach(room => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${room.name}</td>
+          ${room.availability.map((status, index) => `
+            <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
+              ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${room.name}" value="${data.dates[index]}" />` : "Ocupado"}
+            </td>
+          `).join("")}
+        `;
+        tbody.appendChild(row);
+      });
+      table.appendChild(tbody);
+
+      availabilityDiv.appendChild(table);
+    } catch (error) {
+      console.error("Erro ao carregar as datas disponíveis:", error);
+      document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", loadAvailability);
+
+  async function submitForm() {
+    console.log("Iniciando envio do formulário...");
+    const form = document.getElementById('reservationForm');
+    const phone = form.phone.value.trim();
+    const email = form.email.value.trim();
+    const people = parseInt(form.people.value.trim(), 10);
+
+    if (!/^[0-9]{9}$/.test(phone)) {
+      alert("O número de telefone deve conter exatamente 9 dígitos.");
+      return;
+    }
+
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      alert("Por favor, insira um e-mail válido.");
+      return;
+    }
+
+    if (isNaN(people) || people < 1) {
+      alert("Por favor, insira o número de pessoas (mínimo de 1).");
+      return;
+    }
+
+    const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+      .map(checkbox => ({
+        date: checkbox.value,
+        room: checkbox.getAttribute('data-room')
+      }))
+      .filter(item => item !== null);
+
+    if (selectedDatesAndRooms.length === 0) {
+      alert("Por favor, selecione ao menos um quarto e uma data.");
+      return;
+    }
+
+    let totalCapacity = 0;
+    selectedDatesAndRooms.forEach(selection => {
+      const roomNumber = selection.room;
+      const maxCapacity = roomCapacity[roomNumber]?.max;
+
+      if (maxCapacity) {
+        totalCapacity += maxCapacity;
+      } else {
+        console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
+      }
+    });
+
+    console.log(`Capacidade total calculada: ${totalCapacity}`);
+    if (totalCapacity < people) {
+      alert(
+        `A capacidade total (${totalCapacity} pessoas) dos quartos selecionados não é suficiente para acomodar ${people} pessoas.\n` +
+        `Por favor, selecione quartos adicionais ou ajuste o número de pessoas.`
+      );
+      return;
+    }
+
+    const postData = {
+      name: form.name.value,
+      company: form.company.value,
+      phone,
+      email: email || "Não informado",
+      people,
+      selectedDatesAndRooms,
+      reservationDate: new Date().toISOString()
+    };
+
+    try {
+      const response = await fetch(scriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData)
+      });
+
+      const result = await response.json();
+      if (result.status === "success") {
+        alert("Reserva criada com sucesso!");
+      } else {
+        alert("Erro ao criar reserva: " + result.message);
+      }
+    } catch (error) {
+      console.error("Erro ao enviar a reserva:", error);
+      alert(`Erro ao enviar a reserva: ${error.message}`);
+    }
+  }
+</script>
