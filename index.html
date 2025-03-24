@@ -344,27 +344,37 @@ async function submitForm() {
   }
 
   // Gera a data atual (Data de Registro)
-  const today = new Date();
-  const registrationDate = formatDateFrontEnd(today); // Data de registro no formato dd-MM-yyyy
-  console.log("Data de Registro:", registrationDate);
+const today = new Date();
+const registrationDate = formatDateFrontEnd(today); // Formata a data atual no formato dd-MM-yyyy
 
-  // Prepara os dados para envio
-  const postData = {
-    name: form.name.value.trim(),
-    company: form.company.value.trim(),
-    phone,
-    email: email || "Não informado",
-    people,
-    selectedDatesAndRooms,
-    registrationDate // Adiciona a Data de Registro
-  };
+const postData = {
+  name: form.name.value.trim(),
+  company: form.company.value.trim(),
+  phone: form.phone.value.trim(),
+  email: form.email.value.trim(),
+  people: parseInt(form.people.value.trim(), 10),
+  selectedDatesAndRooms: Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+    .map(checkbox => ({
+      date: formatDateFrontEnd(checkbox.value),
+      room: checkbox.getAttribute('data-room')
+    })),
+  registrationDate // Adiciona a Data de Registro ao objeto
+};
 
-  try {
-    const response = await fetch(scriptUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData)
-    });
+console.log("postData:", postData); // Verifica se registrationDate está presente
+console.log("Data de Registro (Front-End):", registrationDate);
+
+fetch(scriptUrl, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(postData)
+})
+.then(response => response.json())
+.then(data => console.log("Resposta do Servidor:", data))
+.catch(error => console.error("Erro no envio:", error));
+
 
     const result = await response.json();
     if (result.status === "success") {
