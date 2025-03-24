@@ -387,7 +387,18 @@
     const form = document.getElementById('reservationForm');
     const phone = form.phone.value.trim();
     const email = form.email.value.trim();
-    const people = parseInt(form.people.value.trim(), 10);
+    const people = data.people && !isNaN(data.people) ? parseInt(data.people, 10) : "Não especificado";
+
+  sheet.appendRow([
+    name,              // Coluna 1: Nome
+    company,           // Coluna 2: Empresa
+    phone,             // Coluna 3: Telefone
+    email,             // Coluna 4: E-mail
+    people,            // Coluna 5: Nº de Pessoas
+    formattedDate,     // Coluna 6: Data da reserva formatada
+    item.room          // Coluna 7: Quarto reservado
+  ]);
+
 
     if (!/^[0-9]{9}$/.test(phone)) {
       alert("O número de telefone deve conter exatamente 9 dígitos.");
@@ -438,14 +449,15 @@
     }
 
     const postData = {
-      name: form.name.value,
-      company: form.company.value,
+      name: form.name.value.trim(),
+      company: form.company.value.trim(),
       phone,
       email: email || "Não informado",
-      people,
+      people, // Campo Nº de Pessoas
       selectedDatesAndRooms,
       reservationDate: new Date().toISOString()
-    };
+      };
+
 
     try {
       const response = await fetch(scriptUrl, {
@@ -466,3 +478,4 @@
     }
   }
 </script>
+
