@@ -266,69 +266,81 @@
     document.addEventListener("DOMContentLoaded", loadAvailability);
 
     async function submitForm() {
-      console.log("Enviando formulário...");
-      const form = document.getElementById('reservationForm');
-      const phone = form.phone.value.trim()
-      const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-        .map(checkbox => ({
-          date: checkbox.value,
-          room: checkbox.getAttribute('data-room')
-        }));
-      
-      if (selectedDatesAndRooms.length === 0) {
-        alert("Por favor, selecione pelo menos um quarto e uma data.");
-        return;
-      }
-       
-          // Valida se o telefone contém exatamente 9 dígitos
-      if (!/^[0-9]{9}$/.test(phone)) {
-        alert("O número de telefone deve conter exatamente 9 dígitos.");
-        return;
-      }
+  console.log("Iniciando envio do formulário...");
+  const form = document.getElementById('reservationForm');
 
-    // Gera a data no formato dd-MM-yyyy antes de enviar
-    const today = new Date();
-    const reservationDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+  // Captura os valores do formulário
+  const phone = form.phone.value.trim();
+  const email = form.email.value.trim() || "Não informado";
+  const people = parseInt(form.people.value.trim(), 10);
 
-    // Declare o email uma única vez
-const email = form.email.value.trim() || "Não informado"; // Trata e insere "Não informado" se estiver vazio
+  // Validações
+  if (!/^[0-9]{9}$/.test(phone)) {
+    alert("O número de telefone deve conter exatamente 9 dígitos.");
+    return;
+  }
+  if (isNaN(people) || people < 1) {
+    alert("Por favor, insira o número de pessoas (mínimo de 1).");
+    return;
+  }
 
-// Use o email diretamente onde for necessário, sem redeclará-lo
-const postData = {
-  name: form.name.value.trim(),
-  company: form.company.value.trim(),
-  phone: form.phone.value.trim(),
-  email, // Já está declarado
-  people: parseInt(form.people.value.trim(), 10),
-  selectedDatesAndRooms,
-  reservationDate: formatDate(new Date()) // Data formatada como dd-MM-yyyy
-};
+  // Captura os quartos e datas selecionados
+  const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+    .map(checkbox => ({
+      date: formatDate(checkbox.value), // Formata a data no formato dd-MM-yyyy
+      room: checkbox.getAttribute('data-room')
+    }))
+    .filter(item => item !== null);
 
-  
+  if (selectedDatesAndRooms.length === 0) {
+    alert("Por favor, selecione pelo menos um quarto e uma data.");
+    return;
+  }
 
+  // Gera a data atual no formato dd-MM-yyyy
+  const reservationDate = formatDate(new Date());
 
+  // Prepara os dados para envio
+  const postData = {
+    name: form.name.value.trim(),
+    company: form.company.value.trim(),
+    phone,
+    email,
+    people,
+    selectedDatesAndRooms,
+    reservationDate // Data já formatada
+  };
 
-      try {
-        const response = await fetch(scriptUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postData)
-        });
+  console.log("Dados enviados:", postData);
 
-        const result = await response.json();
-        if (result.status === "success") {
-          alert("Reserva criada com sucesso!");
-        } else {
-          alert("Erro ao criar reserva: " + result.message);
-        }
-      } catch (error) {
-        console.error("Erro ao enviar a reserva:", error);
-        alert(`Erro ao enviar a reserva: ${error.message}`);
-      }
+  try {
+    const response = await fetch(scriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData)
+    });
+
+    const result = await response.json();
+    if (result.status === "success") {
+      alert("Reserva criada com sucesso!");
+    } else {
+      alert("Erro ao criar reserva: " + result.message);
     }
-  </script>
-</body>
-</html>
+  } catch (error) {
+    console.error("Erro ao enviar a reserva:", error);
+    alert(`Erro ao enviar a reserva: ${error.message}`);
+  }
+}
+
+// Função para formatar a data no formato dd-MM-yyyy
+function formatDate(dateInput) {
+  const date = new Date(dateInput);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
 
 
 <script>
@@ -437,7 +449,7 @@ const postData = {
       alert("O número de pessoas deve ter no máximo dois dígitos.");
       return;
     }
-    
+
     const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
       .map(checkbox => ({
         date: checkbox.value,
@@ -451,16 +463,27 @@ const postData = {
     }
 
     let totalCapacity = 0;
-    selectedDatesAndRooms.forEach(selection => {
-      const roomNumber = selection.room;
-      const maxCapacity = roomCapacity[roomNumber]?.max;
 
-      if (maxCapacity) {
-        totalCapacity += maxCapacity;
-      } else {
-        console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
-      }
-    });
+selectedDatesAndRooms.forEach(selection => {
+  const roomNumber = selection.room;
+  const maxCapacity = roomCapacity[roomNumber]?.max;
+
+  if (maxCapacity) {
+    totalCapacity += maxCapacity;
+  } else {
+    console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
+  }
+});
+
+console.log(`Capacidade total calculada: ${totalCapacity}`);
+
+if (totalCapacity < people) {
+  alert(
+    `A capacidade total (${totalCapacity} pessoas) dos quartos selecionados não é suficiente para acomodar ${people} pessoas.\n` +
+    `Por favor, selecione quartos adicionais ou ajuste o número de pessoas.`
+  );
+  return;
+}
 
     console.log(`Capacidade total calculada: ${totalCapacity}`);
     if (totalCapacity < people) {
