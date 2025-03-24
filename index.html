@@ -94,6 +94,12 @@
       display: block;
       margin: 20px auto;
     }
+    
+      /* Centraliza o botão */
+    .form-container button {
+    display: block;
+    margin: 15px auto 0;
+    }
 
     button:hover {
       background-color: #0056b3;
@@ -109,10 +115,23 @@
       padding: 10px;
       border-radius: 10px;
       margin: 10px auto;
-      max-width: 450px;
+      max-width: 450px; /* Largura do formulário */
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      max-height: auto; /* Ajustável de acordo com o conteúdo */
+    }
+    .form-container div {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap; /* Quebra automaticamente para caber as informações */
     }
 
+      /* Ajuste para o tamanho das letras de "Ocupado" */
+    .occupied {
+    background-color: #dc3545;
+    font-size: 0.75em; /* Reduz tamanho da fonte */
+    text-align: center;
+    padding: 4px;
+    }
     .logo {
       position: absolute;
       top: 10px;
@@ -131,23 +150,37 @@
   <h2>Reserva de Quartos</h2>
   
   <div class="form-container">
-    <h3>Informações do Cliente</h3>
-    <form id="reservationForm">
-      <label for="name">Nome</label>
-      <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
-      
-      <label for="company">Empresa</label>
-      <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
-      
-      <label for="phone">Telefone</label>
-      <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
-      
-      <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
-      
-      <button type="button" onclick="submitForm()">Enviar</button>
-    </form>
-  </div>
+  <h3>Informações do Cliente</h3>
+  <form id="reservationForm">
+    <!-- Primeira linha: Nome e Empresa -->
+    <div>
+      <div style="flex: 1;">
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+      </div>
+      <div style="flex: 1;">
+        <label for="company">Empresa</label>
+        <input type="text" id="company" name="company" placeholder="Digite o nome da sua empresa">
+      </div>
+    </div>
+
+    <!-- Segunda linha: Telefone e E-mail -->
+    <div>
+      <div style="flex: 1;">
+        <label for="phone">Telefone</label>
+        <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required pattern="[0-9]{9}" title="Por favor, insira exatamente 9 números">
+      </div>
+      <div style="flex: 1;">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
+      </div>
+    </div>
+
+    <!-- Botão "Enviar" -->
+    <button type="button" onclick="submitForm()">Enviar</button>
+  </form>
+</div>
+
 
   <h3>Disponibilidade de Quartos</h3>
   <div id="availability"></div>
