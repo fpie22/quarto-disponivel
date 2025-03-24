@@ -288,7 +288,6 @@ function formatDateFrontEnd(dateInput) {
 }
 
 async function submitForm() {
-  console.log("Iniciando envio do formulário...");
   const form = document.getElementById('reservationForm');
   const phone = form.phone.value.trim();
   const email = form.email.value.trim();
@@ -312,73 +311,40 @@ async function submitForm() {
 
   // Captura os quartos e datas selecionados
   const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-  .map(checkbox => ({
-    date: formatDateFrontEnd(checkbox.value), // Usa a função para formatar as datas
-    room: checkbox.getAttribute('data-room')
-  }))
-  .filter(item => item.date && item.room); // Garante que só entradas válidas sejam enviadas
-
-console.log("Quartos e Datas Selecionados:", selectedDatesAndRooms);
-
+    .map(checkbox => ({
+      date: checkbox.value, // Captura o valor do checkbox (data)
+      room: checkbox.getAttribute('data-room') // Captura o quarto
+    }));
 
   if (selectedDatesAndRooms.length === 0) {
     alert("Por favor, selecione ao menos um quarto e uma data.");
     return;
   }
 
-  let totalCapacity = 0;
-
-  selectedDatesAndRooms.forEach(selection => {
-    const roomNumber = selection.room;
-    const maxCapacity = roomCapacity[roomNumber]?.max;
-
-    if (maxCapacity) {
-      totalCapacity += maxCapacity;
-    } else {
-      console.warn(`Capacidade do Quarto ${roomNumber} não encontrada.`);
-    }
-  });
-
-  if (totalCapacity < people) {
-    alert(
-      `A capacidade total (${totalCapacity} pessoas) dos quartos selecionados não é suficiente para acomodar ${people} pessoas.\n` +
-      `Por favor, selecione quartos adicionais ou ajuste o número de pessoas.`
-    );
-    return;
-  }
-
   // Gera a data atual (Data de Registro)
-const today = new Date();
-const registrationDate = formatDateFrontEnd(today); // Formata a data atual no formato dd-MM-yyyy
+  const today = new Date();
+  const registrationDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
 
-const postData = {
-  name: form.name.value.trim(),
-  company: form.company.value.trim(),
-  phone: form.phone.value.trim(),
-  email: form.email.value.trim(),
-  people: parseInt(form.people.value.trim(), 10),
-  selectedDatesAndRooms: Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-    .map(checkbox => ({
-      date: formatDateFrontEnd(checkbox.value),
-      room: checkbox.getAttribute('data-room')
-    })),
-  registrationDate // Adiciona a Data de Registro ao objeto
-};
+  // Dados para envio
+  const postData = {
+    name: form.name.value.trim(),
+    company: form.company.value.trim(),
+    phone,
+    email: email || "Não informado",
+    people,
+    selectedDatesAndRooms,
+    registrationDate // Adiciona a Data de Registro
+  };
 
-console.log("postData:", postData); // Verifica se registrationDate está presente
-console.log("Data de Registro (Front-End):", registrationDate);
+  console.log("Dados enviados:", postData);
 
-fetch(scriptUrl, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(postData)
-})
-.then(response => response.json())
-.then(data => console.log("Resposta do Servidor:", data))
-.catch(error => console.error("Erro no envio:", error));
-
+  // Envio para o servidor
+  try {
+    const response = await fetch(scriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData)
+    });
 
     const result = await response.json();
     if (result.status === "success") {
@@ -392,7 +358,9 @@ fetch(scriptUrl, {
   }
 }
 
+
   </script>
 </body>
 </html>
+
 
