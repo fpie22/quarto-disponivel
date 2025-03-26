@@ -232,53 +232,50 @@
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
-    }async function loadAvailability() {
-  const now = Date.now();
-  if (now - lastRequestTime < RATE_LIMIT_MS) {
-    console.warn("Aguarde antes de realizar outra requisição.");
-    return;
-  }
-  lastRequestTime = now;
+    }
 
-  try {
-    const response = await handleResponse(await fetch(scriptUrl));
-    const data = await response.json(); // Garante que a resposta é convertida para JSON
-    console.log("Dados recebidos do servidor:", data); // Mostra o objeto 'data' completo
-    console.log("Formato de data.dates:", data.dates); // Mostra o array 'data.dates'
+    async function loadAvailability() {
+      const now = Date.now();
+      if (now - lastRequestTime < RATE_LIMIT_MS) {
+        console.warn("Aguarde antes de realizar outra requisição.");
+        return;
+      }
+      lastRequestTime = now;
 
-    const availabilityDiv = document.getElementById("availability");
-    availabilityDiv.innerHTML = "";
+      try {
+        const data = await handleResponse(await fetch(scriptUrl));
+        const availabilityDiv = document.getElementById("availability");
+        availabilityDiv.innerHTML = "";
 
-    const table = document.createElement("table");
-    const thead = document.createElement("thead");
-    const headerRow = document.createElement("tr");
-    headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
 
-    const tbody = document.createElement("tbody");
-    data.rooms.forEach(room => {
-      const row = document.createElement("tr");
-      const formattedRoomName = room.name.replace("Quarto ", "Q");
-      row.innerHTML = `
-        <td>${formattedRoomName}</td>
-        ${room.availability.map((status, index) => `
-          <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
-            ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
-          </td>
-        `).join("")}
-      `;
-      tbody.appendChild(row);
-    });
-    table.appendChild(tbody);
+        const tbody = document.createElement("tbody");
+        data.rooms.forEach(room => {
+          const row = document.createElement("tr");
+          const formattedRoomName = room.name.replace("Quarto ", "Q");
+          row.innerHTML = `
+            <td>${formattedRoomName}</td>
+            ${room.availability.map((status, index) => `
+              <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
+                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
+              </td>
+            `).join("")}
+          `;
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
 
-    availabilityDiv.appendChild(table);
-  } catch (error) {
-    console.error("Erro ao carregar as datas disponíveis:", error);
-    document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
-  }
-}
-
+        availabilityDiv.appendChild(table);
+      } catch (error) {
+        console.error("Erro ao carregar as datas disponíveis:", error);
+        document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
+      }
+    }
 
     document.addEventListener("DOMContentLoaded", loadAvailability);
 
@@ -373,4 +370,5 @@ async function submitForm() {
   </script>
 </body>
 </html>
+
 
