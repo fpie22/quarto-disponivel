@@ -309,12 +309,20 @@ async function submitForm() {
     return;
   }
 
-  // Captura os quartos e datas selecionados
-      const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-        .map(checkbox => ({
-            date: formatDateFrontEnd(checkbox.value), // Formata a data aqui
-            room: checkbox.getAttribute('data-room')
-        }));
+    // Captura os quartos e datas selecionados
+  const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+    .map(checkbox => {
+      const room = checkbox.getAttribute('data-room');
+      if (!room) {
+        console.error("Quarto não especificado para a data:", checkbox.value);
+        return null; // Ignora checkboxes sem quarto especificado
+      }
+      return {
+        date: formatDateFrontEnd(checkbox.value),
+        room: room
+      };
+    })
+    .filter(item => item !== null); // Remove itens nulos
 
   if (selectedDatesAndRooms.length === 0) {
     alert("Por favor, selecione ao menos um quarto e uma data.");
@@ -362,6 +370,16 @@ async function submitForm() {
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 
