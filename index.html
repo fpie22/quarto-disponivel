@@ -278,13 +278,13 @@
 
     document.addEventListener("DOMContentLoaded", loadAvailability);
 
-    // Função para formatar a data no formato dd-MM-yyyy
+  // Função para formatar a data no formato dd-MM-yyyy
 function formatDateFrontEnd(dateInput) {
-  const date = new Date(dateInput);
-  const day = String(date.getDate()).padStart(2, '0'); // Adiciona zero à esquerda se necessário
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses começam em 0, por isso +1
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
+    const date = new Date(dateInput);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
 }
 
 async function submitForm() {
@@ -310,11 +310,11 @@ async function submitForm() {
   }
 
   // Captura os quartos e datas selecionados
-  const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-    .map(checkbox => ({
-      date: checkbox.value, // Captura o valor do checkbox (data)
-      room: checkbox.getAttribute('data-room') // Captura o quarto
-    }));
+      const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
+        .map(checkbox => ({
+            date: formatDateFrontEnd(checkbox.value), // Formata a data aqui
+            room: checkbox.getAttribute('data-room')
+        }));
 
   if (selectedDatesAndRooms.length === 0) {
     alert("Por favor, selecione ao menos um quarto e uma data.");
@@ -362,5 +362,7 @@ async function submitForm() {
   </script>
 </body>
 </html>
+
+
 
 
