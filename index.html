@@ -232,50 +232,53 @@
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
-    }
+    }async function loadAvailability() {
+  const now = Date.now();
+  if (now - lastRequestTime < RATE_LIMIT_MS) {
+    console.warn("Aguarde antes de realizar outra requisição.");
+    return;
+  }
+  lastRequestTime = now;
 
-    async function loadAvailability() {
-      const now = Date.now();
-      if (now - lastRequestTime < RATE_LIMIT_MS) {
-        console.warn("Aguarde antes de realizar outra requisição.");
-        return;
-      }
-      lastRequestTime = now;
+  try {
+    const response = await handleResponse(await fetch(scriptUrl));
+    const data = await response.json(); // Garante que a resposta é convertida para JSON
+    console.log("Dados recebidos do servidor:", data); // Mostra o objeto 'data' completo
+    console.log("Formato de data.dates:", data.dates); // Mostra o array 'data.dates'
 
-      try {
-        const data = await handleResponse(await fetch(scriptUrl));
-        const availabilityDiv = document.getElementById("availability");
-        availabilityDiv.innerHTML = "";
+    const availabilityDiv = document.getElementById("availability");
+    availabilityDiv.innerHTML = "";
 
-        const table = document.createElement("table");
-        const thead = document.createElement("thead");
-        const headerRow = document.createElement("tr");
-        headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = `<th>Quarto</th>${data.dates.map(date => `<th>${formatDate(date)}</th>`).join("")}`;
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
-        const tbody = document.createElement("tbody");
-        data.rooms.forEach(room => {
-          const row = document.createElement("tr");
-          const formattedRoomName = room.name.replace("Quarto ", "Q");
-          row.innerHTML = `
-            <td>${formattedRoomName}</td>
-            ${room.availability.map((status, index) => `
-              <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
-                ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
-              </td>
-            `).join("")}
-          `;
-          tbody.appendChild(row);
-        });
-        table.appendChild(tbody);
+    const tbody = document.createElement("tbody");
+    data.rooms.forEach(room => {
+      const row = document.createElement("tr");
+      const formattedRoomName = room.name.replace("Quarto ", "Q");
+      row.innerHTML = `
+        <td>${formattedRoomName}</td>
+        ${room.availability.map((status, index) => `
+          <td class="${status.trim().toLowerCase() === "disponivel" ? "available" : "occupied"}">
+            ${status.trim().toLowerCase() === "disponivel" ? `<input type="checkbox" data-room="${formattedRoomName}" value="${data.dates[index]}" />` : "Ocupado"}
+          </td>
+        `).join("")}
+      `;
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
 
-        availabilityDiv.appendChild(table);
-      } catch (error) {
-        console.error("Erro ao carregar as datas disponíveis:", error);
-        document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
-      }
-    }
+    availabilityDiv.appendChild(table);
+  } catch (error) {
+    console.error("Erro ao carregar as datas disponíveis:", error);
+    document.getElementById("availability").innerText = `Erro ao carregar as datas disponíveis: ${error.message}`;
+  }
+}
+
 
     document.addEventListener("DOMContentLoaded", loadAvailability);
 
@@ -288,7 +291,7 @@ function formatDateFrontEnd(dateInput) {
     return `${day}-${month}-${year}`;
 }
 
-async function submitForm() {
+    async function submitForm() {
   const form = document.getElementById('reservationForm');
   const phone = form.phone.value.trim();
   const email = form.email.value.trim();
@@ -310,17 +313,21 @@ async function submitForm() {
     return;
   }
 
-    // Captura os quartos e datas selecionados
+  // Captura os quartos e datas selecionados
   const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
     .map(checkbox => {
       const room = checkbox.getAttribute('data-room');
-      if (!room) {
-        console.error("Quarto não especificado para a data:", checkbox.value);
-        return null; // Ignora checkboxes sem quarto especificado
+      const date = checkbox.value;
+
+      if (!room || !date) {
+        console.error("Quarto ou data não especificados:", checkbox);
+        return null; // Ignora checkboxes incompletos
       }
+
+      // Converte a data ISO para o formato dd-MM-yyyy
       return {
-        date: formatDateFrontEnd(checkbox.value),
-        room: room
+        date: formatDateFrontEnd(date),
+        room
       };
     })
     .filter(item => item !== null); // Remove itens nulos
@@ -330,10 +337,6 @@ async function submitForm() {
     return;
   }
 
-  // Gera a data atual (Data de Registro)
-  const today = new Date();
-  const registrationDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
-
   // Dados para envio
   const postData = {
     name: form.name.value.trim(),
@@ -341,8 +344,7 @@ async function submitForm() {
     phone,
     email: email || "Não informado",
     people,
-    selectedDatesAndRooms,
-    registrationDate // Adiciona a Data de Registro
+    selectedDatesAndRooms
   };
 
   console.log("Dados enviados:", postData);
@@ -370,5 +372,6 @@ async function submitForm() {
   </script>
 </body>
 </html>
+
 
 
