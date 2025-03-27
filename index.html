@@ -296,10 +296,21 @@
 
     // Captura os quartos e datas selecionados
     const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
-      .map(checkbox => ({
-        date: formatDateFrontEnd(checkbox.value), // Garantir formato dd-MM-yyyy
-        room: checkbox.getAttribute('data-room')
-      }));
+      .map(checkbox => {
+        const date = checkbox.value;
+        const room = checkbox.getAttribute('data-room');
+        if (!room || !date) {
+          console.error("Quarto ou data não especificados:", checkbox);
+          return null; // Ignora checkboxes incompletos
+        }
+
+        // Garantir formato dd-MM-yyyy para a data
+        return {
+          date: formatDateFrontEnd(date), // Corrige a data do checkbox
+          room
+        };
+      })
+      .filter(item => item !== null);
 
     if (selectedDatesAndRooms.length === 0) {
       alert("Por favor, selecione ao menos um quarto e uma data.");
