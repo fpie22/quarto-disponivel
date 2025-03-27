@@ -225,11 +225,8 @@
 
   // Função para formatar a data no formato dd-MM-yyyy
   function formatDateFrontEnd(dateInput) {
-    const date = new Date(dateInput);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+    const [year, month, day] = dateInput.split("-"); // Dividir ISO format (YYYY-MM-DD)
+    return `${day}-${month}-${year}`; // Retornar dd-MM-yyyy
   }
 
   async function loadAvailability() {
@@ -300,7 +297,7 @@
     // Captura os quartos e datas selecionados
     const selectedDatesAndRooms = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
       .map(checkbox => ({
-        date: formatDateFrontEnd(checkbox.value), // Formata a data aqui
+        date: formatDateFrontEnd(checkbox.value), // Garantir formato dd-MM-yyyy
         room: checkbox.getAttribute('data-room')
       }));
 
@@ -348,6 +345,3 @@
 
   document.addEventListener("DOMContentLoaded", loadAvailability);
 </script>
-
-
-
